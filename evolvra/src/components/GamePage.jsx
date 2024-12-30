@@ -56,6 +56,20 @@ const GamePage = () => {
   }
 
 
+  const handleTryAnother = async () => {
+    const pokemon = await getRandomPokemon()
+    setTargetPokemon(pokemon)
+    console.log("Target Pokemon:", pokemon)
+    setGuesses([])
+    setGuessCount(0)
+    setIsCorrect(false)
+    setShowConfetti(false)
+    setShowTryAnother(false)
+  }
+
+  const getPokemonImageUrl = (id) => {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
+  }
 
 
   return (
@@ -103,6 +117,29 @@ const GamePage = () => {
           <p>{guess.name}</p>
         </div>
       ))}
+
+      {isCorrect && (
+        <div className="mt-6 text-center">
+          <h2 className="nunito-bold text-2xl text-green-500">Correct!! 🎉</h2>
+          <p className="nunito-semibold text-xl">You caught {targetPokemon?.name} in {guessCount} guesses!</p>
+          <div className="mt-4">
+            <Image 
+              src={getPokemonImageUrl(targetPokemon?.id)} 
+              alt={targetPokemon?.name} 
+              width={200} 
+              height={200} 
+              className="rounded-lg"
+            />
+          </div>
+          {showConfetti && <Confetti />}
+        </div>
+      )}
+
+      {showTryAnother && (
+        <button onClick={handleTryAnother} className="mt-6 bg-[#6A0DAD] text-white px-6 py-2 rounded-lg">
+          Try another Pokémon
+        </button>
+      )}
 
     </div>
   )
