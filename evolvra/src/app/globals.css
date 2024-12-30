@@ -15,11 +15,100 @@ body.dark {
   color: #f1f1f1; /* Light text for dark mode */
 }
 
-.nunito-custom {
+.nunito-thin {
   font-family: "Nunito", serif;
-  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.nunito-extralight {
+  font-family: "Nunito", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.nunito-light {
+  font-family: "Nunito", serif;
   font-weight: 400;
   font-style: normal;
+}
+
+.nunito-regular {
+  font-family: "Nunito", serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.nunito-medium {
+  font-family: "Nunito", serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.nunito-semibold {
+  font-family: "Nunito", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.nunito-bold {
+  font-family: "Nunito", serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.nunito-extrabold {
+  font-family: "Nunito", serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.nunito-thin-italic {
+  font-family: "Nunito", serif;
+  font-weight: 200;
+  font-style: italic;
+}
+
+.nunito-extralight-italic {
+  font-family: "Nunito", serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.nunito-light-italic {
+  font-family: "Nunito", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.nunito-regular-italic {
+  font-family: "Nunito", serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.nunito-medium-italic {
+  font-family: "Nunito", serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.nunito-semibold-italic {
+  font-family: "Nunito", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.nunito-bold-italic {
+  font-family: "Nunito", serif;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.nunito-extrabold-italic {
+  font-family: "Nunito", serif;
+  font-weight: 900;
+  font-style: italic;
 }
 
 .poppins-thin {
