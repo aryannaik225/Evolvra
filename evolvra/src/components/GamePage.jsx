@@ -6,11 +6,13 @@ import Star from '@/assets/star.svg'
 import MenuBtn from '@/assets/menuBtn.svg'
 import SubmitBtn from '@/assets/submitBtn.svg'
 import { getRandomPokemon, getPokemonByName } from '@/utils/pokeapi'
+import { getAllPokemonRank } from '@/utils/rankcalculation'
 import Confetti from 'react-confetti'
 
 const GamePage = () => {
 
   const [targetPokemon, setTargetPokemon] = useState(null);
+  const [pokemonRanks, setPokemonRanks] = useState([]);
   const [guesses, setGuesses] = useState([]);
   const [guessCount, setGuessCount] = useState(0);
   const [hintCount, setHintCount] = useState(0);
@@ -18,12 +20,19 @@ const GamePage = () => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showTryAnother, setShowTryAnother] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchRandomPokemon = async () => {
       const pokemon = await getRandomPokemon();
       setTargetPokemon(pokemon);
       console.log("Target Pokemon:", pokemon);
+
+      setLoading(true);
+      const ranks = await getAllPokemonRank(pokemon)
+      console.log("All Pokemon Ranks:", ranks)
+      setPokemonRanks(ranks)
+      setLoading(false)
     }
     fetchRandomPokemon()
   }, [])
