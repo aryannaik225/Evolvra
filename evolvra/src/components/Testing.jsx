@@ -20,7 +20,7 @@ const Testing = () => {
   }, [])
 
   return (
-    <div>Check your console for Pokemon data</div>
+    <div className='absolute top-10 left-12 font-extrabold'>Check your console for Pokemon data</div>
   )
 }
 
