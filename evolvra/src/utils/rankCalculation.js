@@ -57,16 +57,22 @@ export const calculatePokemonRank = async (guessedPokemon, targetPokemon) => {
 
 export const getAllPokemonRank = async (targetPokemon) => {
   let allPokemons = []
-  for (let i=1; i <= 20 ; i++) {
-    const pokemon = await getPokemonByName(i)
-    console.log(pokemon)
-    const rank = await calculatePokemonRank(pokemon, targetPokemon)
-    console.log(rank)
-    allPokemons.push(rank)
+  const fetchPromises = []
+
+  for (let i = 1; i<=1010; i++) {
+    fetchPromises.push(getPokemonByName(i))
   }
 
-  allPokemons.sort((a, b) => b.score - a.score)
-  console.log(allPokemons)
+  const pokemonList = await Promise.all(fetchPromises)
 
-  return allPokemons
+  const rankPromises = pokemonList.map(async (pokemon) => {
+    return await calculatePokemonRank(pokemon, targetPokemon)
+  })
+
+  const allRanks = await Promise.all(rankPromises)
+
+  allRanks.sort((a, b) => b.score - a.score)
+
+  console.log("All Pokemon Ranks:", allRanks)
+  return allRanks
 }

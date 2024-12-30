@@ -6,11 +6,10 @@ import Star from '@/assets/star.svg'
 import MenuBtn from '@/assets/menuBtn.svg'
 import SubmitBtn from '@/assets/submitBtn.svg'
 import { getRandomPokemon, getPokemonByName } from '@/utils/pokeapi'
-import { getAllPokemonRank } from '@/utils/rankcalculation'
+import { getAllPokemonRank } from '@/utils/rankCalculation'
 import Confetti from 'react-confetti'
 
 const GamePage = () => {
-
   const [targetPokemon, setTargetPokemon] = useState(null);
   const [pokemonRanks, setPokemonRanks] = useState([]);
   const [guesses, setGuesses] = useState([]);
@@ -21,65 +20,98 @@ const GamePage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showTryAnother, setShowTryAnother] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingTime, setLoadingTime] = useState(0);
 
   useEffect(() => {
     const fetchRandomPokemon = async () => {
+      setLoading(true); // Start loading
+      const startTime = performance.now(); // Start the timer
+      const timerInterval = setInterval(() => {
+        setLoadingTime(((performance.now() - startTime) / 1000).toFixed(2));
+      }, 100); // Update the loading time every 100ms
+
       const pokemon = await getRandomPokemon();
       setTargetPokemon(pokemon);
       console.log("Target Pokemon:", pokemon);
 
-      setLoading(true);
-      const ranks = await getAllPokemonRank(pokemon)
-      console.log("All Pokemon Ranks:", ranks)
-      setPokemonRanks(ranks)
-      setLoading(false)
-    }
-    fetchRandomPokemon()
-  }, [])
+      const ranks = await getAllPokemonRank(pokemon);
+      setPokemonRanks(ranks);
+
+      clearInterval(timerInterval); // Stop updating the timer
+      setLoadingTime(((performance.now() - startTime) / 1000).toFixed(2)); // Final time
+      setLoading(false); // End loading
+    };
+
+    fetchRandomPokemon();
+  }, []);
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const guessedPokemon = await getPokemonByName(input)
+    const guessedPokemon = await getPokemonByName(input);
 
     if (guessedPokemon) {
-      console.log("Guessed Pokemon:", guessedPokemon)
-      setGuesses((prev) => [...prev, guessedPokemon])
-      setGuessCount((prev) => prev + 1)
+      console.log("Guessed Pokemon:", guessedPokemon);
+      setGuesses((prev) => [...prev, guessedPokemon]);
+      setGuessCount((prev) => prev + 1);
 
-      // Check if the guessed Pokemon is the target Pokemon
       if (guessedPokemon.name.toLowerCase() === targetPokemon.name.toLowerCase()) {
-        setIsCorrect(true)
-        setShowConfetti(true)
-        setShowTryAnother(true)
+        setIsCorrect(true);
+        setShowConfetti(true);
+        setShowTryAnother(true);
       }
-
     } else {
-      console.log('Pokemon not found!')
+      console.log('Pokemon not found!');
     }
 
     setInput('');
-  }
-
+  };
 
   const handleTryAnother = async () => {
-    const pokemon = await getRandomPokemon()
-    setTargetPokemon(pokemon)
-    console.log("Target Pokemon:", pokemon)
-    setGuesses([])
-    setGuessCount(0)
-    setIsCorrect(false)
-    setShowConfetti(false)
-    setShowTryAnother(false)
-  }
+    setLoading(true); // Start loading for new game
+    const startTime = performance.now(); // Start the timer
+    const timerInterval = setInterval(() => {
+      setLoadingTime(((performance.now() - startTime) / 1000).toFixed(2));
+    }, 100); // Update the loading time every 100ms
+
+    const pokemon = await getRandomPokemon();
+    setTargetPokemon(pokemon);
+    console.log("Target Pokemon:", pokemon);
+
+    setGuesses([]);
+    setGuessCount(0);
+    setIsCorrect(false);
+    setShowConfetti(false);
+    setShowTryAnother(false);
+
+    const ranks = await getAllPokemonRank(pokemon);
+    setPokemonRanks(ranks);
+
+    clearInterval(timerInterval); // Stop updating the timer
+    setLoadingTime(((performance.now() - startTime) / 1000).toFixed(2)); // Final time
+    setLoading(false); // End loading
+  };
 
   const getPokemonImageUrl = (id) => {
-    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
-  }
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`;
+  };
 
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-[#2A1E4F] text-white">
+        <h2 className="nunito-bold text-3xl">Loading Pokémon rankings...</h2>
+        <p className="nunito-medium text-lg mt-4">
+          Time elapsed: <span className="text-xl">{loadingTime}s</span>
+        </p>
+        <div className="mt-6 flex justify-center items-center">
+          <div className="w-12 h-12 border-4 border-t-[#6A0DAD] border-[#374151] rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='w-full flex flex-col items-center'>
@@ -121,6 +153,10 @@ const GamePage = () => {
         </div>
       </form>
 
+      <div className='mt-4'>
+        <p className='nunito-semibold text-base'>Ranking calculation took: <span className='text-xl'>{loadingTime}s</span></p>
+      </div>
+
       {guesses.map((guess, index) => (
         <div key={index}>
           <p>{guess.name}</p>
@@ -149,9 +185,8 @@ const GamePage = () => {
           Try another Pokémon
         </button>
       )}
-
     </div>
-  )
+  );
 }
 
-export default GamePage
+export default GamePage;
