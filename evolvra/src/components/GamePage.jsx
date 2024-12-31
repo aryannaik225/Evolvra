@@ -155,8 +155,9 @@ const GamePage = () => {
       </div>
 
       {guesses.map((guess, index) => (
-        <div key={index} className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start'>
-          <p className='ml-6 nunito-semibold text-lg'>{capitalizeFirstLetter(guess.name)}</p>
+        <div key={index} className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'>
+          <div className='absolute inset-y-0 bg-green-300 rounded-sm opacity-70 -z-10 w-[573px]'></div>
+          <p className='ml-6 nunito-semibold text-lg z-10'>{capitalizeFirstLetter(guess.name)}</p>
         </div>
       ))}
 
