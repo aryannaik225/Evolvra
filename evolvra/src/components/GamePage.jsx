@@ -18,6 +18,8 @@ const GamePage = () => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showTryAnother, setShowTryAnother] = useState(false);
+  const [wrongPokemon, setWrongPokemon] = useState(false);
+  const [currentGuess, setCurrentGuess] = useState(null);
 
   useEffect(() => {
     const fetchRandomPokemon = async () => {
@@ -32,11 +34,17 @@ const GamePage = () => {
     setInput(e.target.value);
   }
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const guessedPokemon = await getPokemonByName(input)
 
     if (guessedPokemon) {
+      setWrongPokemon(false)
+      setCurrentGuess(capitalizeFirstLetter(guessedPokemon.name))
       console.log("Guessed Pokemon:", guessedPokemon)
       setGuesses((prev) => [...prev, guessedPokemon])
       setGuessCount((prev) => prev + 1)
@@ -47,12 +55,11 @@ const GamePage = () => {
         setShowConfetti(true)
         setShowTryAnother(true)
       }
-
+      setInput('');
     } else {
       console.log('Pokemon not found!')
+      setWrongPokemon(true)
     }
-
-    setInput('');
   }
 
 
@@ -65,6 +72,8 @@ const GamePage = () => {
     setIsCorrect(false)
     setShowConfetti(false)
     setShowTryAnother(false)
+    setCurrentGuess(null)
+    setWrongPokemon(false)
   }
 
   const getPokemonImageUrl = (id) => {
@@ -100,7 +109,7 @@ const GamePage = () => {
         <div className='w-[573px] h-16 rounded-lg bg-[#2D1D58] border-[3px] border-solid border-[#374151] flex items-center'>
           <input 
             type="text" 
-            className='ml-5 bg-transparent lg:w-[533px] placeholder:text-[#6A0DAD] nunito-bold text-xl focus:outline-none' 
+            className='ml-5 bg-transparent w-[533px] placeholder:text-[#6A0DAD] nunito-bold text-xl focus:outline-none' 
             placeholder='guess a pokemon'
             spellCheck='false'
             value={input}
@@ -110,18 +119,18 @@ const GamePage = () => {
             <Image src={SubmitBtn} alt='Submit Button' width={12} height={12} />
           </button>
         </div>
-      </form>
 
-      {guesses.map((guess, index) => (
-        <div key={index}>
-          <p>{guess.name}</p>
+        <div className='w-[573px] flex justify-center mt-2'>
+          <div className='w-[563px] h-auto rounded-full'>
+            <p className={`ml-2 nunito-semibold text-red-700 ${wrongPokemon ? '' : 'hidden'}`}>Oops! This Pokemon does not exist</p>
+          </div>
         </div>
-      ))}
+      </form>
 
       {isCorrect && (
         <div className="mt-6 text-center">
           <h2 className="nunito-bold text-2xl text-green-500">Correct!! 🎉</h2>
-          <p className="nunito-semibold text-xl">You caught {targetPokemon?.name} in {guessCount} guesses!</p>
+          <p className="nunito-semibold text-xl">You caught {capitalizeFirstLetter(targetPokemon?.name)} in {guessCount} guesses!</p>
           <div className="mt-4">
             <Image 
               src={getPokemonImageUrl(targetPokemon?.id)} 
@@ -140,6 +149,16 @@ const GamePage = () => {
           Try another Pokémon
         </button>
       )}
+
+      <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start`}>
+        <p className='ml-6 nunito-semibold text-lg'>{currentGuess}</p>
+      </div>
+
+      {guesses.map((guess, index) => (
+        <div key={index} className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start'>
+          <p className='ml-6 nunito-semibold text-lg'>{capitalizeFirstLetter(guess.name)}</p>
+        </div>
+      ))}
 
     </div>
   )
