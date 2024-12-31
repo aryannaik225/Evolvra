@@ -52,7 +52,7 @@ const GamePage = () => {
     if (guessedPokemon) {
       console.log('Guessed Pokemon:', guessedPokemon);
       const rankResult = await calculatePokemonRank(guessedPokemon, targetPokemon);
-
+      console.log(rankResult)
       setGuesses((prev) => [...prev, rankResult]);
       setGuessCount((prev) => prev + 1);
 
