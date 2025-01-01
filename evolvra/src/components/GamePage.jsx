@@ -25,6 +25,36 @@ const GamePage = () => {
   const [currentGuess, setCurrentGuess] = useState(null);
   const [currentRank, setCurrentRank] = useState(null);
 
+  const [currentWidth, setCurrentWidth] = useState(0);
+  const [currentColor, setCurrentColor] = useState('');
+
+
+  const handleGuess = async (r, guessChecker) => {
+    let width = 0
+    if (r < 0) {
+      // setCurrentWidth(50 + r)
+      width = 50 + r
+    } else if (r === 100 && guessChecker.name.toLowerCase() != targetPokemon.name.toLowerCase()) {
+      // setCurrentWidth(563)
+      width = 563
+    } else {
+      // setCurrentWidth((573 * r) / 100)
+      width = (573 * r) / 100
+    }
+
+    if (width > 0 && width < 143) {
+      setCurrentColor('#D5006D')
+    } else if (width > 142 && width < 286) {
+      setCurrentColor('#FF7043')
+    } else if (width > 285 && width < 429) {
+      setCurrentColor('#FFEB3B')
+    } else {
+      setCurrentColor('#66BB6A')
+    }
+
+    setCurrentWidth(width)
+  }
+
   useEffect(() => {
     const fetchRandomPokemon = async () => {
       const pokemon = await getRandomPokemon();
@@ -56,7 +86,10 @@ const GamePage = () => {
 
     if (guessedPokemon) {
       setWrongPokemon(false)
+      setCurrentWidth(0)
+      setCurrentColor('')
       setCurrentGuess(capitalizeFirstLetter(guessedPokemon.name))
+      let guessChecker = guessedPokemon
       console.log("Guessed Pokemon:", guessedPokemon)
       setGuesses((prev) => [...prev, guessedPokemon])
       const rank = await calculateRank(guessedPokemon, targetPokemon)
@@ -66,6 +99,8 @@ const GamePage = () => {
       const rankPercentage = calculateRankPercentage(rank, targetRank)
       setRanks((prev) => [...prev, rankPercentage])
       console.log("Rank Percentage:", rankPercentage)
+
+      handleGuess(rankPercentage, guessChecker)
 
       setGuessCount((prev) => prev + 1)
 
@@ -176,9 +211,11 @@ const GamePage = () => {
         </button>
       )}
 
-      <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-between`}>
-        
-        <p className='ml-6 nunito-semibold text-lg'>{currentGuess}</p>
+      
+
+      <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden`}>
+        <div className='absolute inset-y-0 rounded-sm opacity-70 -z-10' style={{ backgroundColor: `${currentColor}`, width: `${currentWidth}px`}}/>
+        <p className='ml-6 nunito-semibold text-lg z-10'>{currentGuess}</p>
       </div>
 
       {guesses.map((guess, index) => {
