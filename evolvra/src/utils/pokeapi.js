@@ -43,7 +43,7 @@ export const getEvolutionChain = async (pokemonId) => {
     const evolutionChainUrl = pokemonSpecies.evolution_chain.url
     const evolutionChain = await fetch(evolutionChainUrl).then((res) => res.json())
 
-    console.log(evolutionChain)
+    // console.log(evolutionChain)
 
     const extractPokemonNames = (chain) => {
       const names = []
@@ -62,7 +62,7 @@ export const getEvolutionChain = async (pokemonId) => {
     }
 
     const evolutionNames = extractPokemonNames(evolutionChain.chain)
-    console.log(evolutionNames)
+    // console.log(evolutionNames)
 
     return evolutionNames
   } catch (error) {

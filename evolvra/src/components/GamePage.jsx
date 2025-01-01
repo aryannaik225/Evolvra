@@ -7,11 +7,14 @@ import MenuBtn from '@/assets/menuBtn.svg'
 import SubmitBtn from '@/assets/submitBtn.svg'
 import { getRandomPokemon, getPokemonByName } from '@/utils/pokeapi'
 import Confetti from 'react-confetti'
+import { calculateRank } from '@/utils/rankCalculation'
 
 const GamePage = () => {
 
   const [targetPokemon, setTargetPokemon] = useState(null);
+  const [targetRank, setTargetRank] = useState(null);
   const [guesses, setGuesses] = useState([]);
+  const [ranks, setRanks] = useState([]);
   const [guessCount, setGuessCount] = useState(0);
   const [hintCount, setHintCount] = useState(0);
   const [input, setInput] = useState('');
@@ -20,12 +23,16 @@ const GamePage = () => {
   const [showTryAnother, setShowTryAnother] = useState(false);
   const [wrongPokemon, setWrongPokemon] = useState(false);
   const [currentGuess, setCurrentGuess] = useState(null);
+  const [currentRank, setCurrentRank] = useState(null);
 
   useEffect(() => {
     const fetchRandomPokemon = async () => {
       const pokemon = await getRandomPokemon();
       setTargetPokemon(pokemon);
       console.log("Target Pokemon:", pokemon);
+      const rank = await calculateRank(pokemon, pokemon)
+      setTargetRank(rank)
+      console.log("Target Rank:", rank)
     }
     fetchRandomPokemon()
   }, [])
@@ -38,6 +45,11 @@ const GamePage = () => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  const calculateRankPercentage = (currentRank, targetRank) => {
+    const Percentage = (currentRank / targetRank) * 100
+    return Math.round(Percentage * 100) / 100
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const guessedPokemon = await getPokemonByName(input)
@@ -47,6 +59,14 @@ const GamePage = () => {
       setCurrentGuess(capitalizeFirstLetter(guessedPokemon.name))
       console.log("Guessed Pokemon:", guessedPokemon)
       setGuesses((prev) => [...prev, guessedPokemon])
+      const rank = await calculateRank(guessedPokemon, targetPokemon)
+      console.log("Rank:", rank)
+      setCurrentRank(rank)
+
+      const rankPercentage = calculateRankPercentage(rank, targetRank)
+      setRanks((prev) => [...prev, rankPercentage])
+      console.log("Rank Percentage:", rankPercentage)
+
       setGuessCount((prev) => prev + 1)
 
       // Check if the guessed Pokemon is the target Pokemon
@@ -67,13 +87,19 @@ const GamePage = () => {
     const pokemon = await getRandomPokemon()
     setTargetPokemon(pokemon)
     console.log("Target Pokemon:", pokemon)
+    const rank = await calculateRank(pokemon, pokemon)
+    setTargetRank(rank)
+    console.log("Target Rank:", rank)
     setGuesses([])
+    setRanks([])
     setGuessCount(0)
+    setHintCount(0)
     setIsCorrect(false)
     setShowConfetti(false)
     setShowTryAnother(false)
-    setCurrentGuess(null)
     setWrongPokemon(false)
+    setCurrentGuess(null)
+    setCurrentRank(null)
   }
 
   const getPokemonImageUrl = (id) => {
@@ -150,16 +176,44 @@ const GamePage = () => {
         </button>
       )}
 
-      <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start`}>
+      <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-between`}>
+        
         <p className='ml-6 nunito-semibold text-lg'>{currentGuess}</p>
       </div>
 
-      {guesses.map((guess, index) => (
-        <div key={index} className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'>
-          <div className='absolute inset-y-0 bg-green-300 rounded-sm opacity-70 -z-10 w-[573px]'></div>
-          <p className='ml-6 nunito-semibold text-lg z-10'>{capitalizeFirstLetter(guess.name)}</p>
-        </div>
-      ))}
+      {guesses.map((guess, index) => {
+        const rankPercentage = ranks[index]
+        let width = 0
+        if (rankPercentage < 0) {
+          width = 50 + rankPercentage
+        } else if (rankPercentage === 100 && guess.name.toLowerCase() != targetPokemon.name.toLowerCase()) {
+          width = 563
+        } else {
+          width = (573 * rankPercentage) / 100
+        }
+
+        let color = ''
+
+        if (width > 0 && width < 143) {
+          color = '#D5006D'
+        } else if (width > 142 && width < 286) {
+          color = '#FF7043'
+        } else if (width > 285 && width < 429) {
+          color = '#FFEB3B'
+        } else {
+          color = '#66BB6A'
+        }
+
+
+        console.log(`Guess: ${guess.name}, CurrentRank: ${currentRank}, TargetRank: ${targetRank}, Percentage: ${rankPercentage}, Width: ${width}px`);
+
+        return (
+          <div key={index} className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'>
+            <div className='absolute inset-y-0 rounded-sm opacity-70 -z-10' style={{ backgroundColor: `${color}`, width: `${width}px`}}/>
+            <p className='ml-6 nunito-semibold text-lg z-10'>{capitalizeFirstLetter(guess.name)}</p>
+          </div>
+        )
+      })}
 
     </div>
   )
