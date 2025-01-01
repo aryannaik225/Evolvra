@@ -218,7 +218,7 @@ const GamePage = () => {
         <p className='ml-6 nunito-semibold text-lg z-10'>{currentGuess}</p>
       </div>
 
-      {guesses.map((guess, index) => {
+      {/* {guesses.map((guess, index) => {
         const rankPercentage = ranks[index]
         let width = 0
         if (rankPercentage < 0) {
@@ -250,10 +250,61 @@ const GamePage = () => {
             <p className='ml-6 nunito-semibold text-lg z-10'>{capitalizeFirstLetter(guess.name)}</p>
           </div>
         )
-      })}
+      })} */}
+
+
+
+
+      {guesses
+        .map((guess, index) => {
+          let rankPercentage = ranks[index];
+          let width = 0;
+
+          if (rankPercentage < 0) {
+            width = 50 + rankPercentage;
+          } else if (rankPercentage === 100 && guess.name.toLowerCase() !== targetPokemon.name.toLowerCase()) {
+            width = 563;
+          } else {
+            width = (573 * rankPercentage) / 100;
+          }
+
+          return { guess, width, rankPercentage }; // Combine guess, width, and rankPercentage
+        })
+        .sort((a, b) => b.width - a.width) // Sort by width in descending order
+        .map(({ guess, width, rankPercentage }, index) => {
+          let color = '';
+          if (width > 0 && width < 143) {
+            color = '#D5006D';
+          } else if (width > 142 && width < 286) {
+            color = '#FF7043';
+          } else if (width > 285 && width < 429) {
+            color = '#FFEB3B';
+          } else {
+            color = '#66BB6A';
+          }
+
+          console.log(
+            `Guess: ${guess.name}, RankPercentage: ${rankPercentage}, Width: ${width}px`
+          );
+
+          return (
+            <div
+              key={index}
+              className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'
+            >
+              <div
+                className='absolute inset-y-0 rounded-sm opacity-70 -z-10'
+                style={{ backgroundColor: `${color}`, width: `${width}px` }}
+              />
+              <p className='ml-6 nunito-semibold text-lg z-10'>
+                {capitalizeFirstLetter(guess.name)}
+              </p>
+            </div>
+          );
+        })}
 
     </div>
-  )
+  );
 }
 
 export default GamePage
