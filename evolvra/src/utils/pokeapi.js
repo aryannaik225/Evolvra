@@ -14,7 +14,7 @@ export const getPokemonByName = async (name) => {
 
 export const getRandomPokemon = async () => {
   try {
-    const randomId = Math.floor(Math.random() * 721) + 1
+    const randomId = Math.floor(Math.random() * 151) + 1
     const pokemon = await p.getPokemonByName(randomId)
     return pokemon
   } catch (error) {

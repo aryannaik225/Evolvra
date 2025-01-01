@@ -8,13 +8,14 @@ import {
 } from './pokeapi'
 
 const weights = {
-  evolutionChain: 3,
+  evolutionChain: 5,
   type: 4,
-  generation: 2,
-  habitat: 1.5,
+  generation: 3,
+  habitat: 2,
   shape: 1,
-  color: 0.5,
-}
+  color: 1,
+};
+
 
 // const penalties = {
 //   evolutionChain: -5,
@@ -35,12 +36,25 @@ const penalties = {
   color: 0,
 }
 
-const calculateEvolutionChain = async (guessedPokemon, targetPokemon) => {
-  const guessedEvolution = await getEvolutionChain(guessedPokemon.id)
-  const targetEvolution = await getEvolutionChain(targetPokemon.id)
+const normalizeScore = (score, maxScore) => Math.max(0, Math.min((score / maxScore) * 100, 100));
 
-  return guessedEvolution && targetEvolution && guessedEvolution[0] === targetEvolution[0] ? 10 : penalties.evolutionChain
-}
+
+const mapWidth = (score) => Math.max(10, (score / 100) * 573);
+
+
+const calculateEvolutionChain = async (guessedPokemon, targetPokemon) => {
+  const guessedEvolution = await getEvolutionChain(guessedPokemon.id);
+  const targetEvolution = await getEvolutionChain(targetPokemon.id);
+
+  if (!guessedEvolution || !targetEvolution) return penalties.evolutionChain;
+  
+  if (guessedEvolution.includes(targetPokemon.id) || targetEvolution.includes(guessedPokemon.id)) {
+    return 10;
+  }
+
+  return penalties.evolutionChain;
+};
+
 
 
 const calculateTypeSimilarity = async (guessedPokemon, targetPokemon) => {
@@ -98,18 +112,21 @@ const calculateColorSimilarity = async (guessedPokemon, targetPokemon) => {
 }
 
 export const calculateRank = async (guessedPokemon, targetPokemon) => {
-  let totalScore = 0
+  let totalScore = 0;
+  const maxPossibleScore = 
+    weights.evolutionChain * 10 + 
+    weights.type * 10 + 
+    weights.generation * 5 + 
+    weights.habitat * 5 + 
+    weights.shape * 5 + 
+    weights.color * 3;
 
-  totalScore += (await calculateEvolutionChain(guessedPokemon, targetPokemon)) * weights.evolutionChain
-  totalScore += (await calculateTypeSimilarity(guessedPokemon, targetPokemon)) * weights.type
-  totalScore += (await calculateGenerationProximity(guessedPokemon, targetPokemon)) * weights.generation
-  totalScore += (await calculateHabitatSimilarity(guessedPokemon, targetPokemon)) * weights.habitat
-  totalScore += (await calculateShapeSimilarity(guessedPokemon, targetPokemon)) * weights.shape
-  totalScore += (await calculateColorSimilarity(guessedPokemon, targetPokemon)) * weights.color
+  totalScore += (await calculateEvolutionChain(guessedPokemon, targetPokemon)) * weights.evolutionChain;
+  totalScore += (await calculateTypeSimilarity(guessedPokemon, targetPokemon)) * weights.type;
+  totalScore += (await calculateGenerationProximity(guessedPokemon, targetPokemon)) * weights.generation;
+  totalScore += (await calculateHabitatSimilarity(guessedPokemon, targetPokemon)) * weights.habitat;
+  totalScore += (await calculateShapeSimilarity(guessedPokemon, targetPokemon)) * weights.shape;
+  totalScore += (await calculateColorSimilarity(guessedPokemon, targetPokemon)) * weights.color;
 
-  const idDifference = Math.abs(guessedPokemon.id - targetPokemon.id)
-
-  totalScore -= idDifference / 1000
-
-  return totalScore
-}
+  return normalizeScore(totalScore, maxPossibleScore);
+};

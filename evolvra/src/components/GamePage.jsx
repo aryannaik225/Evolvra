@@ -24,36 +24,31 @@ const GamePage = () => {
   const [wrongPokemon, setWrongPokemon] = useState(false);
   const [currentGuess, setCurrentGuess] = useState(null);
   const [currentRank, setCurrentRank] = useState(null);
-
   const [currentWidth, setCurrentWidth] = useState(0);
   const [currentColor, setCurrentColor] = useState('');
 
 
-  const handleGuess = async (r, guessChecker) => {
-    let width = 0
-    if (r < 0) {
-      // setCurrentWidth(50 + r)
-      width = 50 + r
-    } else if (r === 100 && guessChecker.name.toLowerCase() != targetPokemon.name.toLowerCase()) {
-      // setCurrentWidth(563)
-      width = 563
-    } else {
-      // setCurrentWidth((573 * r) / 100)
-      width = (573 * r) / 100
-    }
 
-    if (width > 0 && width < 143) {
-      setCurrentColor('#D5006D')
-    } else if (width > 142 && width < 286) {
-      setCurrentColor('#FF7043')
-    } else if (width > 285 && width < 429) {
-      setCurrentColor('#FFEB3B')
-    } else {
-      setCurrentColor('#66BB6A')
-    }
+  const mapWidth = (score) => Math.max(10, (score / 100) * 573);
 
-    setCurrentWidth(width)
-  }
+  const handleGuess = (rankPercentage) => {
+    const width = mapWidth(rankPercentage); // Map score to width
+    let color = '';
+  
+    if (rankPercentage < 25) {
+      color = '#D5006D'; // Red for low similarity
+    } else if (rankPercentage < 50) {
+      color = '#FF7043'; // Orange for moderate similarity
+    } else if (rankPercentage < 75) {
+      color = '#FFEB3B'; // Yellow for good similarity
+    } else {
+      color = '#66BB6A'; // Green for high similarity
+    }
+  
+    setCurrentWidth(width);
+    setCurrentColor(color);
+  };
+  
 
   useEffect(() => {
     const fetchRandomPokemon = async () => {
@@ -119,12 +114,6 @@ const GamePage = () => {
 
 
   const handleTryAnother = async () => {
-    const pokemon = await getRandomPokemon()
-    setTargetPokemon(pokemon)
-    console.log("Target Pokemon:", pokemon)
-    const rank = await calculateRank(pokemon, pokemon)
-    setTargetRank(rank)
-    console.log("Target Rank:", rank)
     setGuesses([])
     setRanks([])
     setGuessCount(0)
@@ -135,6 +124,12 @@ const GamePage = () => {
     setWrongPokemon(false)
     setCurrentGuess(null)
     setCurrentRank(null)
+    const pokemon = await getRandomPokemon()
+    setTargetPokemon(pokemon)
+    console.log("Target Pokemon:", pokemon)
+    const rank = await calculateRank(pokemon, pokemon)
+    setTargetRank(rank)
+    console.log("Target Rank:", rank)
   }
 
   const getPokemonImageUrl = (id) => {
@@ -260,24 +255,26 @@ const GamePage = () => {
           let rankPercentage = ranks[index];
           let width = 0;
 
-          if (rankPercentage < 0) {
-            width = 50 + rankPercentage;
-          } else if (rankPercentage === 100 && guess.name.toLowerCase() !== targetPokemon.name.toLowerCase()) {
-            width = 563;
-          } else {
-            width = (573 * rankPercentage) / 100;
-          }
+          // if (rankPercentage < 0) {
+          //   width = 50 + rankPercentage;
+          // } else if (rankPercentage === 100 && guess.name.toLowerCase() !== targetPokemon.name.toLowerCase()) {
+          //   width = 563;
+          // } else {
+          //   width = (573 * rankPercentage) / 100;
+          // }
+
+          width = mapWidth(rankPercentage)
 
           return { guess, width, rankPercentage }; // Combine guess, width, and rankPercentage
         })
         .sort((a, b) => b.width - a.width) // Sort by width in descending order
         .map(({ guess, width, rankPercentage }, index) => {
           let color = '';
-          if (width > 0 && width < 143) {
+          if (rankPercentage < 25) {
             color = '#D5006D';
-          } else if (width > 142 && width < 286) {
+          } else if (rankPercentage < 50) {
             color = '#FF7043';
-          } else if (width > 285 && width < 429) {
+          } else if (rankPercentage < 75) {
             color = '#FFEB3B';
           } else {
             color = '#66BB6A';
