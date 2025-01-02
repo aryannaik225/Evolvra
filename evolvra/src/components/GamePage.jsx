@@ -32,6 +32,7 @@ const GamePage = () => {
   const [hintCountDown, setHintCountDown] = useState(5);
   const [hintList, setHintList] = useState([]);
   const [giveUpNotice, setGiveUpNotice] = useState(false);
+  const [types, setTypes] = useState([]);
 
 
 
@@ -53,10 +54,10 @@ const GamePage = () => {
     } else if (hintCount === 2) {
       setHintCount(3);
       setHintCountDown(5);
-      if (targetPokemon.type2) {
-        newHintList.push(`The Pokemon is of ${targetPokemon.type1} and ${targetPokemon.type2} type`);
+      if(types.length === 2) {
+        newHintList.push(`The Pokemon is of ${types[0]} and ${types[1]} types`);
       } else {
-        newHintList.push(`The Pokemon is of ${targetPokemon.type1} type`);
+        newHintList.push(`The Pokemon is of ${types[0]} type`);
       }
     } else if (hintCount === 3) {
       const generation = await getGeneration(targetPokemon.id);
@@ -106,6 +107,11 @@ const GamePage = () => {
       const pokemon = await getRandomPokemon();
       setTargetPokemon(pokemon);
       console.log("Target Pokemon:", pokemon);
+      
+      const targetTypes = pokemon.types
+      const targetTypeNames = targetTypes.map(type => type.type.name)
+      setTypes(targetTypeNames)
+
       const rank = await calculateRank(pokemon, pokemon)
       setTargetRank(rank)
       console.log("Target Rank:", rank)

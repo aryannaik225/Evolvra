@@ -5,15 +5,33 @@
 @tailwind utilities;
 
 body {
-  background-color: #ffffff; /* Light background */
-  color: #333333; /* Light text */
+  /* background-color: #ffffff;  */
+  background-image: url(/bg-light.png);
+  color: #333333;
 }
 
 /* Dark Mode Styles */
 body.dark {
-  background-color: #1a202c; /* Dark background */
-  color: #f1f1f1; /* Light text for dark mode */
+  /* background-color: #1a202c; */
+  background-image: url(/bg-dark.png);
+  color: #f1f1f1;
 }
+
+/* .bag{
+  position: absolute;
+  top: 0;
+  background-image: url(../assets/game-bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+} */
+
+/* .bag.dark {
+  position: absolute;
+  top: 0;
+  background-image: url(../assets/game-bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+} */
 
 .nunito-thin {
   font-family: "Nunito", serif;
