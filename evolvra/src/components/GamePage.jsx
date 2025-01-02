@@ -82,10 +82,14 @@ const GamePage = ({ isDarkMode }) => {
   }
 
 
-  const mapWidth = (score) => Math.max(10, (score / 100) * 573);
+  const mapWidth = (score) => {
+    const isLargeScreen = window.innerWidth >= 768;
+    const multiplier = isLargeScreen ? 573 : 443;
+    return Math.max(10, (score / 100) * multiplier);
+  };
 
   const handleGuess = (rankPercentage) => {
-    const width = mapWidth(rankPercentage); // Map score to width
+    const width = mapWidth(rankPercentage);
     let color = '';
   
     if (rankPercentage < 25) {
@@ -208,7 +212,7 @@ const GamePage = ({ isDarkMode }) => {
 
 
   return (
-    <div className='flex sm:flex-col md:flex-row justify-between items-start'>
+    <div className='flex flex-col md:flex-row justify-between md:items-start items-center'>
       
       <div className='ml-5 w-1/4 h-auto bg-transparent border-transparent border-solid border-[3px] rounded-lg flex flex-col items-center'>
 
@@ -227,15 +231,15 @@ const GamePage = ({ isDarkMode }) => {
       )}
 
 
-      <div className='w-[573px] flex flex-col items-center</div>'>
-        <a href="https://github.com/aryannaik225/Evolvra" className='w-[573px] h-12 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[3px] rounded-lg flex items-center'>
-          <div className='flex gap-[6px]</div>'>
+      <div className='w-[443px] md:w-[573px] flex flex-col items-center'>
+        <a href="https://github.com/aryannaik225/Evolvra" className='md:w-[573px] w-[443px] h-12 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[3px] rounded-lg flex items-center'>
+          <div className='flex gap-[6px]'>
             <Image src={isDarkMode ? Star : StarLight} alt='Star' className='ml-3 w-6 h-auto select-none'/>
             <p className='nunito-semibold text-base mt-1'>Love the project? Star it on GitHub!</p>
           </div>
         </a>
 
-        <div className='w-[573px] flex justify-evenly mt-12 items-center'>
+        <div className='md:w-[573px] w-[443px] flex justify-evenly mt-12 items-center'>
           <div></div>
           <span className='nunito-bold text-3xl'>Guess the Pokémon</span>
           <div className='flex justify-center items-center rounded-full h-8 w-8 hover:bg-[#6A0DAD40] transition-all ease-in-out cursor-pointer'>
@@ -243,7 +247,7 @@ const GamePage = ({ isDarkMode }) => {
           </div>
         </div>
 
-        <div className='mt-8 w-[573px] justify-start mb-3'>
+        <div className='mt-8 md:w-[573px] w-[433px] justify-start mb-3'>
           <div className='ml-2 flex gap-5'>
             <p className='nunito-bold text-base'>Guesses: <span className='text-xl'>{guessCount}</span></p>
             <p className='nunito-bold text-base'>Hint: <span className='text-xl'>{hintCount}</span></p>
@@ -255,10 +259,10 @@ const GamePage = ({ isDarkMode }) => {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className='w-[573px] h-16 rounded-lg dark:bg-[#2D1D58] bg-[#7334A1] border-[3px] border-solid dark:border-[#374151] border-[#15234B] flex items-center'>
+          <div className='md:w-[573px] w-[443px] h-16 rounded-lg dark:bg-[#2D1D58] bg-[#7334A1] border-[3px] border-solid dark:border-[#374151] border-[#15234B] flex items-center'>
             <input 
               type="text" 
-              className='ml-5 bg-transparent w-[533px] dark:placeholder:text-[#6A0DAD] placeholder:text-[#2A1E4F] nunito-bold text-xl focus:outline-none' 
+              className='ml-5 bg-transparent md:w-[533px] w-[423px] dark:placeholder:text-[#6A0DAD] placeholder:text-[#2A1E4F] nunito-bold text-xl focus:outline-none' 
               placeholder='guess a pokemon'
               spellCheck='false'
               value={input}
@@ -269,8 +273,8 @@ const GamePage = ({ isDarkMode }) => {
             </button>
           </div>
 
-          <div className='w-[573px] flex justify-center mt-2'>
-            <div className='w-[563px] h-auto rounded-full'>
+          <div className='md:w-[573px] w-[443px] flex justify-center mt-2'>
+            <div className='md:w-[563px] w-[438px] h-auto rounded-full'>
               <p className={`ml-2 nunito-semibold text-red-700 ${wrongPokemon ? '' : 'hidden'}`}>Oops! This Pokemon does not exist</p>
             </div>
           </div>
@@ -301,7 +305,7 @@ const GamePage = ({ isDarkMode }) => {
 
         
 
-        <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid dark:border-[#6A0DAD] border-[#2A1E4F] rounded-lg flex items-center justify-start relative z-10 overflow-hidden`}>
+        <div className={`md:w-[573px] w-[443px] mt-2 md:mb-10 mb-6 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid dark:border-[#6A0DAD] border-[#2A1E4F] rounded-lg flex items-center justify-start relative z-10 overflow-hidden`}>
           <div className='absolute inset-y-0 rounded-sm opacity-70 -z-10' style={{ backgroundColor: `${currentColor}`, width: `${currentWidth}px`}}/>
           <p className='ml-6 nunito-semibold text-lg z-10'>{currentGuess}</p>
         </div>
@@ -380,7 +384,7 @@ const GamePage = ({ isDarkMode }) => {
             return (
               <div
                 key={index}
-                className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid dark:border-[#6A0DAD] border-[#2A1E4F] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'
+                className='md:w-[573px] w-[443px] mt-2 h-12 bg-transparent border-[3px] border-solid dark:border-[#6A0DAD] border-[#2A1E4F] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'
               >
                 <div
                   className='absolute inset-y-0 rounded-sm opacity-70 -z-10'
@@ -395,7 +399,7 @@ const GamePage = ({ isDarkMode }) => {
 
       </div>
 
-      <div className='mr-5 w-1/4 h-[501px] dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[4px] rounded-lg flex flex-col items-center'>
+      <div className='lg:mr-5 mr-0 lg:w-1/4 w-[443px] lg:h-[501px] h-[401px] lg:mb-0 mb-5 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[4px] rounded-lg flex flex-col items-center md:order-3 order-first'>
           <div className='flex justify-between w-full mt-3'>
             <Image src={PurplePokeball} alt='*' width={26} className='ml-3 select-none'/>
             <p className='nunito-bold text-xl'>Want a hint?</p>
@@ -404,7 +408,7 @@ const GamePage = ({ isDarkMode }) => {
           <div className='w-full flex justify-start ml-6 mt-7'>
             <p className='nunito-bold text-base'>Countdown to your next hint: <span>{hintCountDown}</span></p>
           </div>
-          <button className={`mt-8 px-[70px] py-[18px] text-base nunito-extrabold box-shadow ${hintCountDown!=0 ? 'bg-gray-600 cursor-not-allowed text-gray-900' : 'bg-[#6A0DAD] dark:text-white text-black'}`} disabled={hintCountDown!=0} onClick={handleHint}>
+          <button className={`mt-8 lg:px-[70px] px-[30px] lg:py-[18px] py-[10px] text-base nunito-extrabold box-shadow ${hintCountDown!=0 ? 'bg-gray-600 cursor-not-allowed text-gray-900' : 'bg-[#6A0DAD] dark:text-white text-black'}`} disabled={hintCountDown!=0} onClick={handleHint}>
             Get Hint
           </button>
           
