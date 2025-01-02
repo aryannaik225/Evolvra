@@ -4,13 +4,13 @@ import Snorlax from '@/assets/snorlax.svg'
 import PurplePokeball from '@/assets/purple-pokeball.svg'
 import Image from 'next/image'
 
-const Instructions = () => {
+const Instructions = ({ isDarkMode }) => {
   return (
-    <div className='rounded-xl bg-[#2A1E4F] border-[#6A0DAD] border-4 border-solid mb-9'>
-      <div className='p-4 w-[539px] flex flex-col'>
+    <div className='rounded-xl dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-4 border-solid mb-9'>
+      <div className='p-4 flex flex-col'>
         <div className='flex items-start justify-between'>
           <Image src={PurplePokeball} alt='*' width={26} className='select-none'/>
-          <p className='nunito-bold text-2xl text-[#F1F1F1]'>How To Play?</p>
+          <p className='nunito-bold text-2xl'>How To Play?</p>
           <Image src={Psyduck} alt='*' width={57} className='select-none'/>
         </div>
 

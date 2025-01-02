@@ -3,6 +3,7 @@
 import React, { act, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Star from '@/assets/star.svg'
+import StarLight from '@/assets/star-light.svg'
 import MenuBtn from '@/assets/menuBtn.svg'
 import SubmitBtn from '@/assets/submitBtn.svg'
 import { getRandomPokemon, getPokemonByName, getShape, getHabitat, getGeneration } from '@/utils/pokeapi'
@@ -11,7 +12,7 @@ import { calculateRank } from '@/utils/rankCalculation'
 import Instructions from './Instructions'
 import PurplePokeball from '@/assets/purple-pokeball.svg'
 
-const GamePage = () => {
+const GamePage = ({ isDarkMode }) => {
 
   const [targetPokemon, setTargetPokemon] = useState(null);
   const [targetRank, setTargetRank] = useState(null);
@@ -226,10 +227,10 @@ const GamePage = () => {
       )}
 
 
-      <div className='w-[573px] flex flex-col items-center'>
-        <a href="https://github.com/aryannaik225/Evolvra" className='w-[573px] h-12 bg-[#2A1E4F] border-[#6A0DAD] border-solid border-[3px] rounded-lg flex items-center'>
-          <div className='flex gap-[6px]'>
-            <Image src={Star} alt='Star' className='ml-3 w-6 h-auto select-none'/>
+      <div className='w-[573px] flex flex-col items-center</div>'>
+        <a href="https://github.com/aryannaik225/Evolvra" className='w-[573px] h-12 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[3px] rounded-lg flex items-center'>
+          <div className='flex gap-[6px]</div>'>
+            <Image src={isDarkMode ? Star : StarLight} alt='Star' className='ml-3 w-6 h-auto select-none'/>
             <p className='nunito-semibold text-base mt-1'>Love the project? Star it on GitHub!</p>
           </div>
         </a>
@@ -250,14 +251,14 @@ const GamePage = () => {
         </div>
 
         {showInstruction && (
-          <Instructions />
+          <Instructions isDarkMode={isDarkMode}/>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className='w-[573px] h-16 rounded-lg bg-[#2D1D58] border-[3px] border-solid border-[#374151] flex items-center'>
+          <div className='w-[573px] h-16 rounded-lg dark:bg-[#2D1D58] bg-[#7334A1] border-[3px] border-solid dark:border-[#374151] border-[#15234B] flex items-center'>
             <input 
               type="text" 
-              className='ml-5 bg-transparent w-[533px] placeholder:text-[#6A0DAD] nunito-bold text-xl focus:outline-none' 
+              className='ml-5 bg-transparent w-[533px] dark:placeholder:text-[#6A0DAD] placeholder:text-[#2A1E4F] nunito-bold text-xl focus:outline-none' 
               placeholder='guess a pokemon'
               spellCheck='false'
               value={input}
@@ -279,7 +280,7 @@ const GamePage = () => {
           <div className="mt-6 text-center">
             <h2 className="nunito-bold text-2xl text-green-500">Correct!! 🎉</h2>
             <p className="nunito-semibold text-xl">You caught {capitalizeFirstLetter(targetPokemon?.name)} in {guessCount} guesses!</p>
-            <div className="mt-4">
+            <div className="mt-4 flex justify-center w-full">
               <Image 
                 src={getPokemonImageUrl(targetPokemon?.id)} 
                 alt={targetPokemon?.name} 
@@ -300,7 +301,7 @@ const GamePage = () => {
 
         
 
-        <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden`}>
+        <div className={`w-[573px] mt-2 mb-10 ${currentGuess ? '' : 'hidden'} h-12 bg-transparent border-[3px] border-solid dark:border-[#6A0DAD] border-[#2A1E4F] rounded-lg flex items-center justify-start relative z-10 overflow-hidden`}>
           <div className='absolute inset-y-0 rounded-sm opacity-70 -z-10' style={{ backgroundColor: `${currentColor}`, width: `${currentWidth}px`}}/>
           <p className='ml-6 nunito-semibold text-lg z-10'>{currentGuess}</p>
         </div>
@@ -379,7 +380,7 @@ const GamePage = () => {
             return (
               <div
                 key={index}
-                className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid border-[#6A0DAD] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'
+                className='w-[573px] mt-2 h-12 bg-transparent border-[3px] border-solid dark:border-[#6A0DAD] border-[#2A1E4F] rounded-lg flex items-center justify-start relative z-10 overflow-hidden'
               >
                 <div
                   className='absolute inset-y-0 rounded-sm opacity-70 -z-10'
@@ -394,7 +395,7 @@ const GamePage = () => {
 
       </div>
 
-      <div className='mr-5 w-1/4 h-[501px] bg-[#2A1E4F] border-[#6A0DAD] border-solid border-[4px] rounded-lg flex flex-col items-center'>
+      <div className='mr-5 w-1/4 h-[501px] dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[4px] rounded-lg flex flex-col items-center'>
           <div className='flex justify-between w-full mt-3'>
             <Image src={PurplePokeball} alt='*' width={26} className='ml-3 select-none'/>
             <p className='nunito-bold text-xl'>Want a hint?</p>
@@ -403,7 +404,7 @@ const GamePage = () => {
           <div className='w-full flex justify-start ml-6 mt-7'>
             <p className='nunito-bold text-base'>Countdown to your next hint: <span>{hintCountDown}</span></p>
           </div>
-          <button className={`mt-8 px-[70px] py-[18px] text-base nunito-extrabold box-shadow ${hintCountDown!=0 ? 'bg-gray-600 cursor-not-allowed text-gray-900' : 'bg-[#6A0DAD] text-white'}`} disabled={hintCountDown!=0} onClick={handleHint}>
+          <button className={`mt-8 px-[70px] py-[18px] text-base nunito-extrabold box-shadow ${hintCountDown!=0 ? 'bg-gray-600 cursor-not-allowed text-gray-900' : 'bg-[#6A0DAD] dark:text-white text-black'}`} disabled={hintCountDown!=0} onClick={handleHint}>
             Get Hint
           </button>
           
@@ -411,7 +412,7 @@ const GamePage = () => {
             {hintList.map((hint, index) => {
               return (
                 <div key={index} className='w-10/12 border-t-[0.5px] border-[#220139] flex-start mt-2'>
-                  <p className='py-4 ml-5'>{hint}</p>
+                  <p className='py-4 ml-5 nunito-semibold '>{hint}</p>
                 </div>
               )
             })}
