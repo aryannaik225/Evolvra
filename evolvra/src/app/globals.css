@@ -218,3 +218,13 @@ body.dark {
   font-weight: 900;
   font-style: italic;
 }
+
+.box-shadow {
+  box-shadow: 4px 4px 0px 0px #000;
+  transition: all ease-in-out 0.1s;
+}
+
+.box-shadow:active {
+  box-shadow: 0 0 0 0;
+  transform: translateX(4px) translateY(4px); 
+}

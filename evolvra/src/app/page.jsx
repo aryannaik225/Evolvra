@@ -10,6 +10,7 @@ const page = () => {
       <DarkModeToggle />
       <Navbar />
       <div className='mt-4'>
+        
         <GamePage />
       </div>
       {/* <Testing /> */}
