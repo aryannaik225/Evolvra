@@ -7,14 +7,14 @@ export const getPokemonByName = async (name) => {
     const pokemon = await p.getPokemonByName(String(name).toLowerCase())
     return pokemon
   } catch (error) {
-    console.log('Error fetching Pokemon data:', error)
+    // console.log('Error fetching Pokemon data:', error)
     return null
   }
 }
 
 export const getRandomPokemon = async () => {
   try {
-    const randomId = Math.floor(Math.random() * 151) + 1
+    const randomId = Math.floor(Math.random() * 386) + 1
     const pokemon = await p.getPokemonByName(randomId)
     return pokemon
   } catch (error) {

@@ -9,7 +9,7 @@ export async function getPokemonByName(name) {
     const pokemon = await P.getPokemonByName(name.toLowerCase())
     return pokemon
   } catch (error) {
-    console.log(`Error fetching data for Pokemon ${name}: ${error}`)
+    // console.log(`Error fetching data for Pokemon ${name}: ${error}`)
     return null
   }
 }

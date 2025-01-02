@@ -107,7 +107,7 @@ const GamePage = ({ isDarkMode }) => {
     const fetchRandomPokemon = async () => {
       const pokemon = await getRandomPokemon();
       setTargetPokemon(pokemon);
-      console.log("Target Pokemon:", pokemon);
+      // console.log("Target Pokemon:", pokemon);
       
       const targetTypes = pokemon.types
       const targetTypeNames = targetTypes.map(type => type.type.name)
@@ -115,7 +115,7 @@ const GamePage = ({ isDarkMode }) => {
 
       const rank = await calculateRank(pokemon, pokemon)
       setTargetRank(rank)
-      console.log("Target Rank:", rank)
+      // console.log("Target Rank:", rank)
     }
     fetchRandomPokemon()
   }, [])
@@ -151,15 +151,15 @@ const GamePage = ({ isDarkMode }) => {
       }
 
       let guessChecker = guessedPokemon
-      console.log("Guessed Pokemon:", guessedPokemon)
+      // console.log("Guessed Pokemon:", guessedPokemon)
       setGuesses((prev) => [...prev, guessedPokemon])
       const rank = await calculateRank(guessedPokemon, targetPokemon)
-      console.log("Rank:", rank)
+      // console.log("Rank:", rank)
       setCurrentRank(rank)
 
       const rankPercentage = calculateRankPercentage(rank, targetRank)
       setRanks((prev) => [...prev, rankPercentage])
-      console.log("Rank Percentage:", rankPercentage)
+      // console.log("Rank Percentage:", rankPercentage)
 
       handleGuess(rankPercentage, guessChecker)
 
@@ -196,10 +196,10 @@ const GamePage = ({ isDarkMode }) => {
     setHintList([])
     const pokemon = await getRandomPokemon()
     setTargetPokemon(pokemon)
-    console.log("Target Pokemon:", pokemon)
+    // console.log("Target Pokemon:", pokemon)
     const rank = await calculateRank(pokemon, pokemon)
     setTargetRank(rank)
-    console.log("Target Rank:", rank)
+    // console.log("Target Rank:", rank)
   }
 
   const getPokemonImageUrl = (id) => {
@@ -373,9 +373,9 @@ const GamePage = ({ isDarkMode }) => {
               color = '#00B859';
             }
 
-            console.log(
-              `Guess: ${guess.name}, RankPercentage: ${rankPercentage}, Width: ${width}px`
-            );
+            // console.log(
+            //   `Guess: ${guess.name}, RankPercentage: ${rankPercentage}, Width: ${width}px`
+            // );
 
             return (
               <div
