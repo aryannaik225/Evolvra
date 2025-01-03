@@ -446,7 +446,7 @@ const GamePage = ({ isDarkMode }) => {
               Get Hint
             </button>
             
-            <div className='w-full flex h-[309px] overflow-y-scroll flex-col items-center'>
+            <div className='w-full flex h-[309px] overflow-y-scroll no-scrollbar flex-col items-center'>
               {hintList.map((hint, index) => {
                 return (
                   <div key={index} className='w-10/12 border-t-[0.5px] border-[#220139] flex-start mt-2'>

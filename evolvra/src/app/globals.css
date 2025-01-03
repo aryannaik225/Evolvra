@@ -17,21 +17,16 @@ body.dark {
   color: #f1f1f1;
 }
 
-/* .bag{
-  position: absolute;
-  top: 0;
-  background-image: url(../assets/game-bg.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-} */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
-/* .bag.dark {
-  position: absolute;
-  top: 0;
-  background-image: url(../assets/game-bg.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-} */
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 
 .nunito-thin {
   font-family: "Nunito", serif;
