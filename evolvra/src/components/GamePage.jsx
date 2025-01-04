@@ -11,6 +11,9 @@ import Confetti from 'react-confetti'
 import { calculateRank } from '@/utils/rankCalculation'
 import Instructions from './Instructions'
 import PurplePokeball from '@/assets/purple-pokeball.svg'
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { db } from '@/utils/firebaseConfig'
+import { useAuth } from '@/context/AuthContext'
 
 const GamePage = ({ isDarkMode }) => {
 
@@ -35,7 +38,37 @@ const GamePage = ({ isDarkMode }) => {
   const [hintList, setHintList] = useState([]);
   const [giveUpNotice, setGiveUpNotice] = useState(false);
   const [types, setTypes] = useState([]);
+  const [inventory, setInventory] = useState([]);
 
+  const { user } = useAuth()
+
+  const savePokemontoInventory = async (pokemonName) => {
+    if (!user) return;
+
+    const userRef = doc(db, 'users', user.uid)
+
+    try {
+      await updateDoc(userRef, {
+        inventory: arrayUnion(pokemonName)
+      })
+    } catch (e) {
+      await setDoc(userRef, { inventory: [pokemonName] })
+    }
+  }
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchInventory = async () => {
+      const userRef = doc(db, 'users', user.uid)
+      const docSnap = await getDoc(userRef)
+      if (docSnap.exists()) {
+        setInventory(docSnap.data().inventory || [])
+      }
+    }
+
+    fetchInventory()
+  }, [user])
 
 
   const handleHint = async () => {
@@ -151,6 +184,7 @@ const GamePage = ({ isDarkMode }) => {
     e.preventDefault();
     setShowInstruction(false)
     const guessedPokemon = await getPokemonByName(input)
+    setInput('')
 
     if (guessedPokemon) {
       setWrongPokemon(false)
@@ -184,8 +218,15 @@ const GamePage = ({ isDarkMode }) => {
         setIsCorrect(true)
         setShowConfetti(true)
         setShowTryAnother(true)
+        
+        const pokemonName = capitalizeFirstLetter(targetPokemon.name)
+
+        await savePokemontoInventory(pokemonName)
+
+        setInventory((prev) => [...prev, pokemonName])
+      
       }
-      setInput('');
+      
     } else {
       console.log('Pokemon not found!')
       setWrongPokemon(true)
@@ -254,7 +295,13 @@ const GamePage = ({ isDarkMode }) => {
   
     {letsPlay && (
       <div className='flex flex-col lg:flex-row justify-between gap-2 lg:items-start items-center'>
-        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-auto bg-transparent border-transparent border-solid border-[3px] rounded-lg flex flex-col items-center'></div>
+        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-auto bg-transparent border-transparent border-solid border-[3px] rounded-lg flex flex-col items-center'>
+          {inventory.map((pokemon, index) => (
+            <div key={index}>
+              <p>{pokemon}</p>
+            </div>
+          ))}
+        </div>
   
         {giveUpNotice && (
           <div className='fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50'>
