@@ -14,6 +14,7 @@ import PurplePokeball from '@/assets/purple-pokeball.svg'
 import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/utils/firebaseConfig'
 import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'next/navigation'
 
 const GamePage = ({ isDarkMode }) => {
 
@@ -39,8 +40,32 @@ const GamePage = ({ isDarkMode }) => {
   const [giveUpNotice, setGiveUpNotice] = useState(false);
   const [types, setTypes] = useState([]);
   const [inventory, setInventory] = useState([]);
+  const [calculating, setCalculating] = useState(false)
+  const [calc, setCalc] = useState('')
 
-  const { user } = useAuth()
+
+  const router = useRouter()
+
+  useEffect(() => {
+    let interval;
+    if (calculating) {
+      interval = setInterval(() => {
+        setCalc((prev) => {
+          if (prev.endsWith('...')) {
+            return 'Calculating';
+          } else {
+            return prev + '.';
+          }
+        });
+      }, 500);
+    } else {
+      setCalc('');
+    }
+
+    return () => clearInterval(interval);
+  }, [calculating]);
+
+  const { user, loading } = useAuth()
 
   const savePokemontoInventory = async (pokemonName) => {
     if (!user) return;
@@ -57,7 +82,13 @@ const GamePage = ({ isDarkMode }) => {
   }
 
   useEffect(() => {
-    if (!user) return;
+    if(loading) 
+      return
+    
+    if (!user) {
+      router.push('/login')
+      return
+    }
 
     const fetchInventory = async () => {
       const userRef = doc(db, 'users', user.uid)
@@ -68,7 +99,7 @@ const GamePage = ({ isDarkMode }) => {
     }
 
     fetchInventory()
-  }, [user])
+  }, [user, loading, router])
 
 
   const handleHint = async () => {
@@ -184,9 +215,10 @@ const GamePage = ({ isDarkMode }) => {
     e.preventDefault();
     setShowInstruction(false)
     const guessedPokemon = await getPokemonByName(input)
-    setInput('')
+    
 
     if (guessedPokemon) {
+      setCalculating(true)
       setWrongPokemon(false)
       setCurrentWidth(0)
       setCurrentColor('')
@@ -207,6 +239,8 @@ const GamePage = ({ isDarkMode }) => {
 
       const rankPercentage = calculateRankPercentage(rank, targetRank)
       setRanks((prev) => [...prev, rankPercentage])
+      setInput('')
+      setCalculating(false)
       // console.log("Rank Percentage:", rankPercentage)
 
       handleGuess(rankPercentage, guessChecker)
@@ -316,7 +350,7 @@ const GamePage = ({ isDarkMode }) => {
         )}
   
   
-        <div className='w-10/12 sm:w-[443px] md:w-[573px] flex flex-col items-center'>
+        <div className='w-10/12 sm:w-[443px] md:w-[573px] flex flex-col items-cent</div>er'>
           <a href="https://github.com/aryannaik225/Evolvra" className='md:w-[573px] sm:w-[443px] w-full h-12 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[3px] rounded-lg flex items-center'>
             <div className='flex sm:gap-[6px] gap-[3px]'>
               <Image src={isDarkMode ? Star : StarLight} alt='Star' className='ml-3 w-5 sm:w-6 h-auto select-none'/>
@@ -336,6 +370,7 @@ const GamePage = ({ isDarkMode }) => {
             <div className='sm:ml-2 ml-1 flex gap-5'>
               <p className='nunito-semibold md:nunito-bold text-base'>Guesses: <span className='nunito-bold text-lg sm:text-xl'>{guessCount}</span></p>
               <p className='nunito-semibold md:nunito-bold text-base'>Hint: <span className='nunito-bold text-lg sm:text-xl'>{hintCount}</span></p>
+              <p className={`sm:ml-2 -ml-2 nunito-semibold text-nowrap ${calculating ? '' : 'hidden'}`}>Calculating{calc}</p>
             </div>
           </div>
   
