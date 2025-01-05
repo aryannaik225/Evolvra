@@ -42,9 +42,27 @@ const GamePage = ({ isDarkMode }) => {
   const [inventory, setInventory] = useState([]);
   const [calculating, setCalculating] = useState(false)
   const [calc, setCalc] = useState('')
-
+  const [pokemonList, setPokemonList] = useState([])
 
   const router = useRouter()
+
+  useEffect(() => {
+
+    const fetchPokemonList = async () => {
+      const names = []
+      for(let i = 0; i < 386; i++) {
+        const pokemon = await getPokemonByName(i+1)
+        if(pokemon?.name) {
+          names.push(pokemon.name)
+        }
+      }
+      setPokemonList(names)
+    }
+
+    fetchPokemonList()
+
+  }, [])
+
 
   useEffect(() => {
     let interval;
@@ -329,12 +347,30 @@ const GamePage = ({ isDarkMode }) => {
   
     {letsPlay && (
       <div className='flex flex-col lg:flex-row justify-between gap-2 lg:items-start items-center'>
-        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-auto bg-transparent border-transparent border-solid border-[3px] rounded-lg flex flex-col items-center'>
-          {inventory.map((pokemon, index) => (
+        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-screen overflow-scroll no-scrollbar bg-[#2A1E4F] border-transparent border-solid border-[3px] rounded-lg flex flex-col items-center'>
+          {/*{inventory.map((pokemon, index) => (
             <div key={index}>
               <p>{pokemon}</p>
             </div>
-          ))}
+          ))}*/}
+          <div className='grid grid-cols-3 gap-4 mt-2 w-full ml-5'>
+            {pokemonList.map((pokemon, index) => (
+              <div key={index}>
+                <div className='w-24 h-28 flex flex-col items-center justify-between gap-2 bg-[#400080]'>
+                  <div className='w-24 h-24 flex justify-center items-center'>
+                    <Image 
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index+1}.svg`}
+                      alt={pokemon}
+                      width={70}
+                      height={30}
+                      className={`${!inventory.includes(capitalizeFirstLetter(pokemon)) ? 'silhouette' : ''} max-w-24 max-h-20`}
+                    />
+                  </div>
+                  <p className='nunito-semibold text-sm'>{!inventory.includes(capitalizeFirstLetter(pokemon)) ? '???' : `${capitalizeFirstLetter(pokemon)}`}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
   
         {giveUpNotice && (
