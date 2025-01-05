@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isClient, setIsClient] = useState(false);
+  const [signup, setSignup] = useState(false);
 
   const { user } = useAuth();
   const router = useRouter();
@@ -18,12 +19,12 @@ const Login = () => {
     setIsClient(true);
   }, []);
 
-  useEffect(() =>{
+  useEffect(() => {
     if (isClient && user) {
       router.push("/");
     }
   }, [user, isClient, router]);
- 
+
   const handleEmailLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -48,27 +49,62 @@ const Login = () => {
     }
   };
 
-  if(!isClient) {
+  if (!isClient) {
     return null;
   }
 
   return (
     <div>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleEmailLogin}>Login</button>
-      <button onClick={handleEmailSignup}>Sign Up</button>
-      <button onClick={handleGoogleLogin}>Login with Google</button>
+      <video id='myVideo' autoPlay loop muted className="-z-10 fixed top-0 left-0 w-screen h-auto">
+        <source src="/mudkip-rainy-day-pond-pokemon-moewalls.mp4" type="video/mp4" />
+      </video>
+
+      <div className="flex items-center justify-center w-screen h-screen">
+        <div className="flex flex-col items-center w-[397px] h-[421px] glass">
+          <p className="text-white nunito-bold text-3xl mt-12">{signup ? 'Welcome!' : 'Welcome Back!'}</p>
+          <div className={` w-auto h-auto flex flex-col items-center ${signup ? 'mt-7 gap-5' : 'mt-14 gap-7'}`}>
+            <div className="flex items-center w-[281px] h-[43px] bg-[#00000050] rounded-3xl border-2 border-white relative">
+              <input type="email" id="floating_outlined" className="block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+              <label htmlFor="floating_outlined" className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-[#000000] px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Email Id</label>
+            </div>
+
+            <div className="flex items-center w-[281px] h-[43px] bg-[#00000050] rounded-3xl border-2 border-white relative">
+              <input type="email" id="floating_outlined" className="block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+              <label htmlFor="floating_outlined" className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-black px-2 peer-focus:px-2
+            peer-focus:text-white peer-placeholder-shown:scale-100 peer-focus:bg-black peer-placeholder-shown:bg-transparent   peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Password</label>
+            </div>
+
+            <div className={`items-center w-[281px] h-[43px] bg-[#00000050] rounded-3xl border-2 border-white relative ${signup ? 'flex' : 'hidden'}`}>
+              <input type="email" id="floating_outlined" className="block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+              <label htmlFor="floating_outlined" className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-black px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-focus:bg-black peer-placeholder-shown:bg-transparent   peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Password</label>
+            </div>
+
+          </div>
+          <div className="flex justify-center w-full mt-3">
+            <div className="w-[281px] flex justify-between items-center">
+              <div className="flex items-center">
+                <input type="checkbox" id="password_show" value='' className="ml-2 w-4 h-4 text-green-600 bg-white-100 border-gray-300 rounded-lg ring-offset-gray-800 "/>
+                <label htmlFor="password_show" className="ms-2 text-xs nunito-regular text-white">Show Password</label>
+              </div>
+              <div>
+                <p className="text-xs nunito-regular text-white mr-2">Forgot Password?</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex w-[281px] justify-between items-center">
+            <button onClick={signup ? handleEmailSignup : handleEmailLogin} className=" bg-white hover:bg-gray-200 py-2 px-12 transition-all duration-200 border-2 border-white text-black nunito-semibold text-sm rounded-full">{signup ? 'Register' : 'Login'}</button>
+            <button onClick={handleGoogleLogin} className=" bg-[#00000050] hover:bg-gray-500 transition-all duration-200 py-2 px-8 text-white nunito-regular border-2 border-white text-sm rounded-full flex justify-center items-center gap-2">
+              <img src="/google-icon.svg" alt="google icon" className="w-4 h-4" />
+              <p>Google</p>
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-white nunito-regular text-sm">{signup ? 'Already have an account?' : "Don't have an account?"} <span onClick={() => setSignup((prev) => !prev)} className="text-blue-500 cursor-pointer">{signup ? 'Log In' : 'Sign Up'}</span></p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
