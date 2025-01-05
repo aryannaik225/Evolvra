@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail, fetchSignInMethodsForEmail, GoogleAuthProvider } from "firebase/auth";
 import { auth, googleProvider } from "@/utils/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -43,6 +44,24 @@ const Login = () => {
     }
   };
 
+  const db = getFirestore();
+
+  const saveUserToDatabase = async (uid, email) => {
+    try {
+      const userRef = doc(db, "users", uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists()) {
+        await setDoc(userRef, { email }, { merge: true });
+        console.log("User updated successfully!");
+      } else {
+        await setDoc(userRef, { email });
+        console.log("User saved successfully!");
+      }
+    } catch (error) {
+      console.error("Error saving/updating user to database:", error);
+    }
+  };
 
   const { user } = useAuth();
   const router = useRouter();
@@ -59,7 +78,9 @@ const Login = () => {
 
   const handleEmailLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      saveUserToDatabase(user.uid, user.email);
       setLoginError("");
     } catch (error) {
       console.log(error.message);
@@ -92,7 +113,9 @@ const Login = () => {
 
   const handleEmailSignup = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      saveUserToDatabase(user.uid, user.email);
       setLoginError("");
     } catch (error) {
       console.log(error.message);
@@ -140,7 +163,9 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const user = userCredential.user;
+      saveUserToDatabase(user.uid, user.email);
       setLoginError("");
     } catch (error) {
       console.log(error.message);

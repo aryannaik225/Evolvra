@@ -28,6 +28,11 @@ body.dark {
   scrollbar-width: none;  /* Firefox */
 }
 
+.silhouette {
+  filter: grayscale(100%);
+  filter: contrast(0);
+}
+
 #myVideo {
   filter: brightness(0.85);
 }
