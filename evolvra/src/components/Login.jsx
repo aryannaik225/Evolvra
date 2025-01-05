@@ -9,8 +9,17 @@ import { useRouter } from "next/navigation";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
   const [isClient, setIsClient] = useState(false);
   const [signup, setSignup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [emailErrorValue, setEmailErrorValue] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordErrorValue, setpasswordErrorValue] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [rePasswordErrorValue, setRePasswordErrorValue] = useState(false);
+  const [rePasswordError, setRePasswordError] = useState('');
 
   const { user } = useAuth();
   const router = useRouter();
@@ -41,6 +50,43 @@ const Login = () => {
     }
   };
 
+  const handlePasswordLogic = () => {
+    if (!email || !password || !rePassword) {
+      if(!email) {
+        setEmailErrorValue(true);
+        setEmailError("Email is required")
+      } else {
+        setEmailErrorValue(false);
+      }
+      if(!password) {
+        setpasswordErrorValue(true);
+        setPasswordError("Password is required")
+      } else {
+        setpasswordErrorValue(false);
+      }
+      if(!rePassword) {
+        setRePasswordErrorValue(true);
+        setRePasswordError("Re-enter password is required")
+      } else {
+        setRePasswordErrorValue(false);
+      }
+      return
+    } else {
+      setEmailErrorValue(false);
+      setpasswordErrorValue(false);
+      setRePasswordErrorValue(false);
+    }
+
+    if (password !== rePassword) {
+      setRePasswordErrorValue(true);
+      setRePasswordError("Password does not match")
+      return;
+    } else {
+      setRePasswordErrorValue(false);
+    }
+    handleEmailSignup();
+  }
+
   const handleGoogleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
@@ -48,6 +94,10 @@ const Login = () => {
       console.error(error.message);
     }
   };
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  }
 
   if (!isClient) {
     return null;
@@ -64,26 +114,44 @@ const Login = () => {
           <p className="text-white nunito-bold text-3xl mt-12">{signup ? 'Welcome!' : 'Welcome Back!'}</p>
           <div className={` w-auto h-auto flex flex-col items-center ${signup ? 'mt-7 gap-5' : 'mt-14 gap-7'}`}>
             <div className="flex items-center w-[281px] h-[43px] bg-[#00000050] rounded-3xl border-2 border-white relative">
-              <input type="email" id="floating_outlined" className="block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+              <input type="email" id="floating_outlined" onClick={(e) => setEmail(e.target.value)} className="z-20 block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
               <label htmlFor="floating_outlined" className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-[#000000] px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Email Id</label>
+              <div className="cursor-default z-30 group absolute right-5 bg-red-400 rounded-full w-4 h-4 flex justify-center items-center">
+                <p className="text-red-50">!</p>
+                <div className="hidden group-hover:block absolute bottom-full right-0 mb-2 w-32 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
+                  Please re-enter the password
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center w-[281px] h-[43px] bg-[#00000050] rounded-3xl border-2 border-white relative">
-              <input type="email" id="floating_outlined" className="block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-              <label htmlFor="floating_outlined" className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-black px-2 peer-focus:px-2
+              <input type={showPassword ? 'text' : 'password'} id="floating_outlined" className="z-20 block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+              <label htmlFor="floating_outlined" onClick={(e) => setPassword(e.target.value)} className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-black px-2 peer-focus:px-2
             peer-focus:text-white peer-placeholder-shown:scale-100 peer-focus:bg-black peer-placeholder-shown:bg-transparent   peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Password</label>
+              <div className="cursor-default z-30 group absolute right-5 bg-red-400 rounded-full w-4 h-4 flex justify-center items-center">
+                <p className="text-red-50">!</p>
+                <div className="hidden group-hover:block absolute bottom-full right-0 mb-2 w-32 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
+                  Please re-enter the password
+                </div>
+              </div>
             </div>
 
             <div className={`items-center w-[281px] h-[43px] bg-[#00000050] rounded-3xl border-2 border-white relative ${signup ? 'flex' : 'hidden'}`}>
-              <input type="email" id="floating_outlined" className="block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-              <label htmlFor="floating_outlined" className="absolute text-sm ml-3 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-black px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-focus:bg-black peer-placeholder-shown:bg-transparent   peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Password</label>
+              <input type={showPassword ? 'text' : 'password'} onClick={(e) => setRePassword(e.target.value)} id="floating_outlined" className="z-20 block ml-5 pb-2.5 pt-2 w-full text-sm bg-transparent rounded-lg border-1 border-gray-300 appearance-none text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+              <label htmlFor="floating_outlined" className="absolute text-sm left-5 text-gray-500 duration-300 transform -translate-y-5 scale-75 top-2 z-10 origin-[0] bg-black px-2 peer-focus:px-2 peer-focus:text-white peer-placeholder-shown:scale-100 peer-focus:bg-black peer-placeholder-shown:bg-transparent   peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Re-enter Password</label>
+              <div className="cursor-default z-30 group absolute right-5 bg-red-400 rounded-full w-4 h-4 flex justify-center items-center">
+                <p className="text-red-50">!</p>
+                <div className="hidden group-hover:block absolute bottom-full right-0 mb-2 w-32 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
+                  Please re-enter the password
+                </div>
+              </div>
             </div>
 
           </div>
           <div className="flex justify-center w-full mt-3">
             <div className="w-[281px] flex justify-between items-center">
               <div className="flex items-center">
-                <input type="checkbox" id="password_show" value='' className="ml-2 w-4 h-4 text-green-600 bg-white-100 border-gray-300 rounded-lg ring-offset-gray-800 "/>
+                <input type="checkbox" id="password_show" checked={showPassword} onChange={togglePassword} className="ml-2 w-4 h-4 text-green-600 bg-white-100 border-gray-300 rounded-lg ring-offset-gray-800 "/>
                 <label htmlFor="password_show" className="ms-2 text-xs nunito-regular text-white">Show Password</label>
               </div>
               <div>
@@ -93,7 +161,7 @@ const Login = () => {
           </div>
 
           <div className="mt-3 flex w-[281px] justify-between items-center">
-            <button onClick={signup ? handleEmailSignup : handleEmailLogin} className=" bg-white hover:bg-gray-200 py-2 px-12 transition-all duration-200 border-2 border-white text-black nunito-semibold text-sm rounded-full">{signup ? 'Register' : 'Login'}</button>
+            <button onClick={signup ? handlePasswordLogic : handleEmailLogin} className={`bg-white hover:bg-gray-200 py-2 ${signup ? "px-9" : "px-12"} transition-all duration-200 border-2 border-white text-black nunito-semibold text-sm rounded-full`}>{signup ? 'Register' : 'Login'}</button>
             <button onClick={handleGoogleLogin} className=" bg-[#00000050] hover:bg-gray-500 transition-all duration-200 py-2 px-8 text-white nunito-regular border-2 border-white text-sm rounded-full flex justify-center items-center gap-2">
               <img src="/google-icon.svg" alt="google icon" className="w-4 h-4" />
               <p>Google</p>
