@@ -43,6 +43,8 @@ const GamePage = ({ isDarkMode }) => {
   const [calculating, setCalculating] = useState(false)
   const [calc, setCalc] = useState('')
   const [pokemonList, setPokemonList] = useState([])
+  const [showInventory, setShowInventory] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
 
   const router = useRouter()
 
@@ -231,7 +233,6 @@ const GamePage = ({ isDarkMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowInstruction(false)
     const guessedPokemon = await getPokemonByName(input)
     
 
@@ -347,7 +348,7 @@ const GamePage = ({ isDarkMode }) => {
   
     {letsPlay && (
       <div className='flex flex-col lg:flex-row justify-between gap-2 lg:items-start items-center'>
-        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-screen overflow-scroll no-scrollbar bg-[#2A1E4F] border-transparent border-solid border-[3px] rounded-lg flex flex-col items-center'>
+        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-screen overflow-scroll no-scrollbar bg-[#2A1E4F] border-[#6A0DAD] border-solid border-[3px] rounded-lg flex flex-col items-center'>
           {/*{inventory.map((pokemon, index) => (
             <div key={index}>
               <p>{pokemon}</p>
@@ -384,6 +385,43 @@ const GamePage = ({ isDarkMode }) => {
             </div>
           </div>
         )}
+
+
+        {showInventory && (
+          <div className='fixed inset-0 bg-[#000] bg-opacity-75 flex justify-center items-center z-50'>
+            <div className='relative w-1/4 bg-[#2A1E4F] h-3/4 border-[#6A0DAD] border-solid border-[4px] rounded-lg flex flex-col items-center'>
+              <div className='absolute top-4 right-4 w-8 h-8 z-50 bg-[#6A0DAD] rounded-full flex justify-center items-center cursor-pointer' onClick={() => setShowInventory(false)}>
+                <p className='text-white nunito-bold'>X</p>
+              </div>
+              <div className='pb-5 overflow-y-scroll h-full no-scrollbar'>
+                <div className='grid grid-cols-3 gap-6 mt-2 w-full'>
+                  {pokemonList.map((pokemon, index) => (
+                    <div key={index}>
+                      <div className='w-24 h-28 flex flex-col items-center justify-between gap-2 bg-[#400080]'>
+                        <div className='w-24 h-24 flex justify-center items-center'>
+                          <Image 
+                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index+1}.svg`}
+                            alt={pokemon}
+                            width={70}
+                            height={30}
+                            className={`${!inventory.includes(capitalizeFirstLetter(pokemon)) ? 'silhouette' : ''} max-w-24 max-h-20`}
+                          />
+                        </div>
+                        <p className='nunito-semibold text-sm'>{!inventory.includes(capitalizeFirstLetter(pokemon)) ? '???' : `${capitalizeFirstLetter(pokemon)}`}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!showInstruction && (
+          <div className='fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50'>
+            <Instructions setLetsPlay={setShowInstruction}/>
+          </div>
+        )}
   
   
         <div className='w-10/12 sm:w-[443px] md:w-[573px] flex flex-col items-cent</div>er'>
@@ -397,8 +435,24 @@ const GamePage = ({ isDarkMode }) => {
           <div className='md:w-[573px] sm:w-[443px] w-full flex justify-evenly mt-12 items-center'>
             <div></div>
             <span className='nunito-bold md:text-3xl sm:text-2xl text-xl'>Guess the Pokémon</span>
-            <div className='flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] transition-all ease-in-out cursor-pointer'>
-              <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
+            <div className='relative'>
+              <div className={` flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
+                <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
+              </div>
+              <div className={`absolute w-[129px] h-[153px] bg-[#2A1E4F] top-0 left-0 z-10 rounded-[18px] ${showMenu ? 'flex' : 'hidden'} flex-col justify-end items-center`} onClick={(e) => e.stopPropagation()}>
+                <div className={`absolute top-0 left-0 flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
+                  <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
+                </div>
+                <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
+                <div className='mb-2'>
+                  <button onClick={() => {setShowInventory(true); setShowMenu(false)}} className='text-white nunito-bold text-sm' aria-label='Open Inventory'>Inventory</button>
+                </div>
+                <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
+                <div className='mb-2'>
+                  <button onClick={() => {setShowInstruction(false); setShowMenu(false)}} className='text-white nunito-bold text-sm'>How to Play?</button>
+                </div>
+                <div className='mb-6 w-3/4 h-[0.5px] bg-white'/>
+              </div>
             </div>
           </div>
   
@@ -411,7 +465,7 @@ const GamePage = ({ isDarkMode }) => {
           </div>
   
           <form onSubmit={handleSubmit}>
-            <div className='md:w-[573px] sm:w-[443px] w-full h-16 rounded-lg dark:bg-[#2D1D58] bg-[#7334A1] border-[3px] border-solid dark:border-[#374151] border-[#15234B] flex items-center'>
+            <div className={`-z-10 md:w-[573px] sm:w-[443px] w-full h-16 rounded-lg dark:bg-[#2D1D58] bg-[#7334A1] border-[3px] border-solid dark:border-[#374151] border-[#15234B] flex items-center`}>
               <input 
                 type="text" 
                 className='ml-5 bg-transparent md:w-[533px] sm:w-[423px] w-10/12 dark:placeholder:text-[#6A0DAD] placeholder:text-[#2A1E4F] nunito-bold text-xl focus:outline-none' 
