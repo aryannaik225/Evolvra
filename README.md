@@ -7,10 +7,9 @@
 </p>
 
 <p align='center'>
-  <a href="https://evolvra.vercel.app" style="display:inline-block;padding:10px 30px;background-color:#6A0DAD;color:white;text-align:center;text-decoration:none;border-radius:5px;">
-  Start &gt;
-</a>
-
+  <a href="https://evolvra.vercel.app">
+    <img src='evolvra/public/start-btn-readme.png' width='180px'/>
+  </a>
 </p>
 
 ## Features
@@ -36,3 +35,25 @@
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/evolvra.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd evolvra
+   ```
+
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Future Enhancements
+- **Caching**: Implement image caching for performance.
+
+## Contributing
+- Contributions are welcome! Fork the repo and submit a pull request.
