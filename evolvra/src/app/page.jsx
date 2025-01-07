@@ -6,6 +6,7 @@ import GamePage from '@/components/GamePage'
 import Navbar from '@/components/Navbar'
 import React from 'react'
 import { AuthProvider } from '@/context/AuthContext'
+import Footer from '@/components/Footer'
 
 const page = () => {
 
@@ -38,6 +39,7 @@ const page = () => {
         <div className='mt-4'>
           <GamePage isDarkMode={isDarkMode} />
         </div>
+        <Footer />
       </div>
     </AuthProvider>
   )
