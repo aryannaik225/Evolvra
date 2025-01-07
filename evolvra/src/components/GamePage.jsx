@@ -51,14 +51,14 @@ const GamePage = ({ isDarkMode }) => {
   useEffect(() => {
 
     const fetchPokemonList = async () => {
-      const names = []
-      for(let i = 0; i < 386; i++) {
-        const pokemon = await getPokemonByName(i+1)
-        if(pokemon?.name) {
-          names.push(pokemon.name)
-        }
+      try {
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386')
+        const data = await response.json()
+        const pokemonNames = data.results.map(pokemon => pokemon.name)
+        setPokemonList(pokemonNames)
+      } catch (error) {
+        console.error("Error fetching pokemon list ",error)
       }
-      setPokemonList(names)
     }
 
     fetchPokemonList()
@@ -348,13 +348,14 @@ const GamePage = ({ isDarkMode }) => {
   
     {letsPlay && (
       <div className='flex flex-col lg:flex-row justify-between gap-2 lg:items-start items-center'>
-        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 h-screen overflow-scroll no-scrollbar bg-[#2A1E4F] border-[#6A0DAD] border-solid border-[3px] rounded-lg flex flex-col items-center'>
+        <div className='lg:flex hidden xl:hidden'></div>
+        <div className='ml-5 w-1/4 lg:w-0 xl:w-1/4 2xl:w-1/4 h-screen overflow-y-scroll overflow-x-hidden no-scrollbar bg-[#6A0DAD] dark:bg-[#2A1E4F] border-[#2A1E4F] dark:border-[#6A0DAD] border-solid border-4 dark:border-[3px] rounded-lg hidden xl:flex flex-col items-center'>
           {/*{inventory.map((pokemon, index) => (
             <div key={index}>
               <p>{pokemon}</p>
             </div>
           ))}*/}
-          <div className='grid grid-cols-3 gap-4 mt-2 w-full ml-5'>
+          <div className='grid grid-cols-3 gap-4 mt-2 w-full ml-5 2xl:ml-7 mb-5 mr-2'>
             {pokemonList.map((pokemon, index) => (
               <div key={index}>
                 <div className='w-24 h-28 flex flex-col items-center justify-between gap-2 bg-[#400080]'>
@@ -364,6 +365,7 @@ const GamePage = ({ isDarkMode }) => {
                       alt={pokemon}
                       width={70}
                       height={30}
+                      loading='lazy'
                       className={`${!inventory.includes(capitalizeFirstLetter(pokemon)) ? 'silhouette' : ''} max-w-24 max-h-20`}
                     />
                   </div>
@@ -388,13 +390,13 @@ const GamePage = ({ isDarkMode }) => {
 
 
         {showInventory && (
-          <div className='fixed inset-0 bg-[#000] bg-opacity-75 flex justify-center items-center z-50'>
-            <div className='relative w-1/4 bg-[#2A1E4F] h-3/4 border-[#6A0DAD] border-solid border-[4px] rounded-lg flex flex-col items-center'>
+          <div className='fixed w-screen h-screen inset-0 bg-[#000] bg-opacity-75 flex justify-center items-center z-50'>
+            <div className='relative 2xl:w-1/4 xl:w-1/3 lg:w-5/12 md:w-1/2 sm:w-7/12 w-11/12 bg-[#2A1E4F] h-3/4 border-[#6A0DAD] border-solid border-[4px] rounded-lg flex flex-col items-center'>
               <div className='absolute top-4 right-4 w-8 h-8 z-50 bg-[#6A0DAD] rounded-full flex justify-center items-center cursor-pointer' onClick={() => setShowInventory(false)}>
                 <p className='text-white nunito-bold'>X</p>
               </div>
               <div className='pb-5 overflow-y-scroll h-full no-scrollbar'>
-                <div className='grid grid-cols-3 gap-6 mt-2 w-full'>
+                <div className='grid grid-cols-3 md:gap-6 gap-4 mt-2 w-full'>
                   {pokemonList.map((pokemon, index) => (
                     <div key={index}>
                       <div className='w-24 h-28 flex flex-col items-center justify-between gap-2 bg-[#400080]'>
@@ -404,10 +406,11 @@ const GamePage = ({ isDarkMode }) => {
                             alt={pokemon}
                             width={70}
                             height={30}
+                            loading='lazy'
                             className={`${!inventory.includes(capitalizeFirstLetter(pokemon)) ? 'silhouette' : ''} max-w-24 max-h-20`}
                           />
                         </div>
-                        <p className='nunito-semibold text-sm'>{!inventory.includes(capitalizeFirstLetter(pokemon)) ? '???' : `${capitalizeFirstLetter(pokemon)}`}</p>
+                        <p className='nunito-semibold text-sm text-white'>{!inventory.includes(capitalizeFirstLetter(pokemon)) ? '???' : `${capitalizeFirstLetter(pokemon)}`}</p>
                       </div>
                     </div>
                   ))}
@@ -439,9 +442,10 @@ const GamePage = ({ isDarkMode }) => {
               <div className={` flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
                 <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
               </div>
-              <div className={`absolute w-[129px] h-[153px] bg-[#2A1E4F] top-0 left-0 z-10 rounded-[18px] ${showMenu ? 'flex' : 'hidden'} flex-col justify-end items-center`} onClick={(e) => e.stopPropagation()}>
+              <div className={`absolute w-[129px] h-[153px] bg-[#2A1E4F] top-0 sm:left-0 -left-14 z-10 rounded-[18px] ${showMenu ? 'flex' : 'hidden'} flex-col justify-end items-center`} onClick={(e) => e.stopPropagation()}>
                 <div className={`absolute top-0 left-0 flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
-                  <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
+                  <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none sm:block hidden'/>
+                  <p className='nunito-semibold text-white text-xs block sm:hidden select-none'>X</p>
                 </div>
                 <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
                 <div className='mb-2'>
