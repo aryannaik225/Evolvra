@@ -9,9 +9,9 @@ const Instructions = ({ setLetsPlay }) => {
     <div className='rounded-xl dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-4 border-solid mb-9 w-full sm:w-[443px] md:w-[573px]'>
       <div className='p-4 flex flex-col'>
         <div className='flex items-center sm:items-start justify-between'>
-          <Image src={PurplePokeball} alt='*' width={26} className='select-none'/>
+          <Image src={PurplePokeball} alt='*' width={26} draggable='false' className='select-none'/>
           <p className='nunito-bold text-xl sm:text-2xl sm:ml-12 ml-4'>How To Play?</p>
-          <Image src={Psyduck} alt='*' className='select-none w-[40px] sm:w-[57px]'/>
+          <Image src={Psyduck} alt='*' draggable='false' className='select-none w-[40px] sm:w-[57px]'/>
         </div>
 
         <div className='mt-4'>
@@ -23,12 +23,12 @@ const Instructions = ({ setLetsPlay }) => {
         </div>
 
         <div className='flex items-end justify-between mt-4'>
-          <Image src={Snorlax} alt="*" className='w-[57px] sm:w-[97px] select-none'/>
+          <Image src={Snorlax} alt="*" draggable='false' className='w-[57px] sm:w-[97px] select-none'/>
           <button className='mr-4 sm:mr-10 flex justify-center items-center box-shadow gap-3 lg:px-[70px] px-[30px] lg:py-[18px] py-[10px] nunito-bold bg-[#6A0DAD] dark:text-white text-black' onClick={() => setLetsPlay(true)}>
             <p className='text-lg'>Start</p>
             <p className='text-lg'>&gt;</p>
           </button>
-          <Image src={PurplePokeball} alt="*" width={26} className='select-none'/>
+          <Image src={PurplePokeball} alt="*" width={26} draggable='false' className='select-none'/>
         </div>
 
       </div>

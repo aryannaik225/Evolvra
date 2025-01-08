@@ -7,6 +7,7 @@ const DarkModeToggle = ({ isDarkMode, setIsDarkMode }) => {
   return (
     <button
       onClick={() => setIsDarkMode((prev) => !prev)}
+      draggable='false'
       className='absolute xl:top-12 xl:right-32 top-12 right-4 sm:top-12 sm:right-10 p-2 bg-gray-200 dark:bg-[#6A0DAD] rounded-full cursor-pointer hover:scale-105 transform transition-transform'
     >
       {isDarkMode ? (

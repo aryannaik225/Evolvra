@@ -334,9 +334,10 @@ const GamePage = ({ isDarkMode }) => {
           <div className='md:w-[573px] sm:w-[443px] w-full flex justify-evenly mt-12 items-center'>
             <div></div>
             <span className='nunito-bold md:text-3xl sm:text-2xl text-xl'>Guess the Pokémon</span>
-            <div className='flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] transition-all ease-in-out cursor-pointer'>
+            <div></div>
+            {/* <div className='flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] transition-all ease-in-out cursor-pointer'>
               <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
-            </div>
+            </div> */}
           </div>
         
           <div className='mt-4'>
@@ -366,6 +367,7 @@ const GamePage = ({ isDarkMode }) => {
                       width={70}
                       height={30}
                       loading='lazy'
+                      draggable='false'
                       className={`${!inventory.includes(capitalizeFirstLetter(pokemon)) ? 'silhouette' : ''} max-w-24 max-h-20`}
                     />
                   </div>
@@ -407,6 +409,7 @@ const GamePage = ({ isDarkMode }) => {
                             width={70}
                             height={30}
                             loading='lazy'
+                            draggable='false'
                             className={`${!inventory.includes(capitalizeFirstLetter(pokemon)) ? 'silhouette' : ''} max-w-24 max-h-20`}
                           />
                         </div>
@@ -430,7 +433,7 @@ const GamePage = ({ isDarkMode }) => {
         <div className='w-10/12 sm:w-[443px] md:w-[573px] flex flex-col items-cent</div>er'>
           <a href="https://github.com/aryannaik225/Evolvra" className='md:w-[573px] sm:w-[443px] w-full h-12 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[3px] rounded-lg flex items-center'>
             <div className='flex sm:gap-[6px] gap-[3px]'>
-              <Image src={isDarkMode ? Star : StarLight} alt='Star' className='ml-3 w-5 sm:w-6 h-auto select-none'/>
+              <Image src={isDarkMode ? Star : StarLight} alt='Star' draggable='false' className='ml-3 w-5 sm:w-6 h-auto select-none'/>
               <p className='nunito-semibold text-sm sm:text-base mt-1'>Love the project? Star it on GitHub!</p>
             </div>
           </a>
@@ -440,11 +443,11 @@ const GamePage = ({ isDarkMode }) => {
             <span className='nunito-bold md:text-3xl sm:text-2xl text-xl'>Guess the Pokémon</span>
             <div className='relative'>
               <div className={` flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
-                <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
+                <Image src={MenuBtn} alt='Menu Button' width={5} height={24} draggable='false' className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
               </div>
               <div className={`absolute w-[129px] h-[153px] bg-[#2A1E4F] top-0 sm:left-0 -left-14 z-10 rounded-[18px] ${showMenu ? 'flex' : 'hidden'} flex-col justify-end items-center`} onClick={(e) => e.stopPropagation()}>
                 <div className={`absolute top-0 left-0 flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
-                  <Image src={MenuBtn} alt='Menu Button' width={5} height={24} className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none sm:block hidden'/>
+                  <Image src={MenuBtn} alt='Menu Button' width={5} height={24} draggable='false' className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none sm:block hidden'/>
                   <p className='nunito-semibold text-white text-xs block sm:hidden select-none'>X</p>
                 </div>
                 <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
@@ -479,7 +482,7 @@ const GamePage = ({ isDarkMode }) => {
                 onChange={handleInputChange}
               />
               <button className='flex justify-center items-center w-8 h-8 rounded-[4px] bg-[#2A1E4F] border-[#6A0DAD] border-solid border-2 mx-4 cursor-pointer lg:hidden'>
-                <Image src={SubmitBtn} alt='Submit Button' width={12} height={12} className='select-none'/>
+                <Image src={SubmitBtn} draggable='false' alt='Submit Button' width={12} height={12} className='select-none'/>
               </button>
             </div>
   
@@ -500,6 +503,7 @@ const GamePage = ({ isDarkMode }) => {
                   alt={targetPokemon?.name} 
                   width={200} 
                   height={200} 
+                  draggable='false'
                   className="rounded-lg select-none"
                 />
               </div>
@@ -611,9 +615,9 @@ const GamePage = ({ isDarkMode }) => {
   
         <div className='lg:mr-5 mr-0 lg:w-1/4 xl:w-1/4 sm:w-[443px] w-10/12 lg:h-[501px] h-[401px] lg:mb-0 mb-5 dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-solid border-[4px] rounded-lg flex flex-col items-center lg:order-3 order-first'>
             <div className='flex justify-between w-full mt-3'>
-              <Image src={PurplePokeball} alt='*' width={26} className='ml-3 select-none'/>
+              <Image src={PurplePokeball} alt='*' width={26} draggable='false' className='ml-3 select-none'/>
               <p className='nunito-bold sm:text-xl text-lg'>Want a hint?</p>
-              <Image src={PurplePokeball} alt='*' width={26} className='mr-3 select-none'/>
+              <Image src={PurplePokeball} alt='*' width={26} draggable='false' className='mr-3 select-none'/>
             </div>
             <div className='w-full flex justify-start ml-6 sm:mt-7 mt-5'>
               <p className='sm:nunito-bold nunito-semibold text-md sm:text-base'>Countdown to your next hint: <span>{hintCountDown}</span></p>

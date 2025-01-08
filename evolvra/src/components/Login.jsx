@@ -221,7 +221,7 @@ const Login = () => {
 
   return (
     <div>
-      <video id='myVideo' autoPlay loop muted className="-z-10 fixed top-0 left-0 min-w-screen min-h-screen bg-cover hidden lg:block">
+      <video id='myVideo' autoPlay loop muted draggable='false' className="-z-10 fixed top-0 left-0 min-w-screen min-h-screen bg-cover hidden lg:block">
         <source src="/mudkip-rainy-day-pond-pokemon-moewalls.mp4" type="video/mp4" />
       </video>
 
