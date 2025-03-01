@@ -45,6 +45,9 @@ const GamePage = ({ isDarkMode }) => {
   const [pokemonList, setPokemonList] = useState([])
   const [showInventory, setShowInventory] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
+  const [selectRegion, setSelectRegion] = useState(false)
+  const [selectedRegion, setSelectedRegion] = useState('')
+  const [showInstructionMenu, setShowInstructionMenu] = useState(true)
 
   const router = useRouter()
 
@@ -422,6 +425,8 @@ const GamePage = ({ isDarkMode }) => {
             </div>
           </div>
         )}
+
+        
 
         {!showInstruction && (
           <div className='fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50'>
