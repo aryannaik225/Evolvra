@@ -1,6 +1,6 @@
 'use client'
 
-import React, { act, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Star from '@/assets/star.svg'
 import StarLight from '@/assets/star-light.svg'
@@ -17,6 +17,15 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import InstructionMenu from './InstructionMenu'
 import SelectRegion from './SelectRegion'
+
+
+const regionLimits = {
+  Kanto: { start: 1, end: 151 },
+  Johto: { start: 152, end: 251 },
+  Hoenn: { start: 252, end: 386 },
+  Sinnoh: { start: 387, end: 493 },
+  Unova: { start: 494, end: 649 }
+}
 
 const GamePage = ({ isDarkMode }) => {
 
@@ -48,8 +57,9 @@ const GamePage = ({ isDarkMode }) => {
   const [showInventory, setShowInventory] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [selectRegion, setSelectRegion] = useState(false)
-  const [selectedRegion, setSelectedRegion] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState('Kanto')
   const [showInstructionMenu, setShowInstructionMenu] = useState(true)
+  const [indexList, setIndexList] = useState([])
 
   const router = useRouter()
 
@@ -57,9 +67,15 @@ const GamePage = ({ isDarkMode }) => {
 
     const fetchPokemonList = async () => {
       try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=386')
+        if (!selectedRegion || !regionLimits[selectedRegion]) return
+
+        const { start, end } = regionLimits[selectedRegion]
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end-start+1}&offset=${start-1}`)
         const data = await response.json()
         const pokemonNames = data.results.map(pokemon => pokemon.name)
+        const indices = data.results.map(pokemon => parseInt(pokemon.url.split('/')[6], 10))
+        console.log("Pokemon List:", pokemonNames, indices)
+        setIndexList(indices)
         setPokemonList(pokemonNames)
       } catch (error) {
         console.error("Error fetching pokemon list ",error)
@@ -68,7 +84,7 @@ const GamePage = ({ isDarkMode }) => {
 
     fetchPokemonList()
 
-  }, [])
+  }, [selectedRegion])
 
 
   useEffect(() => {
@@ -208,7 +224,7 @@ const GamePage = ({ isDarkMode }) => {
 
   useEffect(() => {
     const fetchRandomPokemon = async () => {
-      const pokemon = await getRandomPokemon();
+      const pokemon = await getRandomPokemon(selectedRegion);
       setTargetPokemon(pokemon);
       // console.log("Target Pokemon:", pokemon);
       
@@ -221,7 +237,7 @@ const GamePage = ({ isDarkMode }) => {
       // console.log("Target Rank:", rank)
     }
     fetchRandomPokemon()
-  }, [])
+  }, [selectedRegion])
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
@@ -232,6 +248,9 @@ const GamePage = ({ isDarkMode }) => {
   }
 
   const calculateRankPercentage = (currentRank, targetRank) => {
+    if (targetRank === 0) {
+      return 0;
+    }
     const Percentage = (currentRank / targetRank) * 100
     return Math.round(Percentage * 100) / 100
   }
@@ -307,7 +326,7 @@ const GamePage = ({ isDarkMode }) => {
     setCurrentColor('')
     setHintCountDown(5)
     setHintList([])
-    const pokemon = await getRandomPokemon()
+    const pokemon = await getRandomPokemon(selectedRegion)
     setTargetPokemon(pokemon)
 
     const targetTypes = pokemon.types
@@ -375,7 +394,7 @@ const GamePage = ({ isDarkMode }) => {
                 <div className='w-24 h-28 flex flex-col items-center justify-between gap-2 bg-[#400080]'>
                   <div className='w-24 h-24 flex justify-center items-center'>
                     <Image 
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index+1}.svg`}
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${indexList[index]}.svg`}
                       alt={pokemon}
                       width={70}
                       height={30}
@@ -417,7 +436,7 @@ const GamePage = ({ isDarkMode }) => {
                       <div className='w-24 h-28 flex flex-col items-center justify-between gap-2 bg-[#400080]'>
                         <div className='w-24 h-24 flex justify-center items-center'>
                           <Image 
-                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index+1}.svg`}
+                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${indexList[index]}.svg`}
                             alt={pokemon}
                             width={70}
                             height={30}
@@ -437,6 +456,12 @@ const GamePage = ({ isDarkMode }) => {
         )}
 
         
+        {selectRegion && (
+          <div className='fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50'>
+            <SelectRegion setLetsPlay={setLetsPlay} setSelectRegion={setSelectRegion} setSelectedRegion={setSelectedRegion}/>
+          </div>
+        )}
+
 
         {!showInstruction && (
           <div className='fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50'>
@@ -460,18 +485,22 @@ const GamePage = ({ isDarkMode }) => {
               <div className={` flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
                 <Image src={MenuBtn} alt='Menu Button' width={5} height={24} draggable='false' className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none'/>
               </div>
-              <div className={`absolute w-[129px] h-[153px] bg-[#2A1E4F] top-0 sm:left-0 -left-14 z-10 rounded-[18px] ${showMenu ? 'flex' : 'hidden'} flex-col justify-end items-center`} onClick={(e) => e.stopPropagation()}>
+              <div className={`absolute w-[129px] h-[193px] bg-[#2A1E4F] top-0 sm:left-0 -left-14 z-10 rounded-[18px] ${showMenu ? 'flex' : 'hidden'} flex-col justify-end items-center`} onClick={(e) => e.stopPropagation()}>
                 <div className={`absolute top-0 left-0 flex justify-center items-center rounded-full sm:h-8 sm:w-8 h-7 w-7 hover:bg-[#6A0DAD40] ${showMenu ? 'bg-[#6A0DAD40]' : 'bg-transparent'} transition-all ease-in-out cursor-pointer z-50`} onClick={() => setShowMenu((prev) => !prev)}>
                   <Image src={MenuBtn} alt='Menu Button' width={5} height={24} draggable='false' className='sm:w-[5px] w-[4px] sm:h-[24px] h-[18px] select-none sm:block hidden'/>
                   <p className='nunito-semibold text-white text-xs block sm:hidden select-none'>X</p>
                 </div>
                 <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
                 <div className='mb-2'>
-                  <button onClick={() => {setShowInventory(true); setShowMenu(false)}} className='text-white nunito-bold text-sm' aria-label='Open Inventory'>Inventory</button>
+                  <button onClick={() => {setSelectRegion(true); setShowMenu(false); setGuesses([]); setRanks([]); setGuessCount(0); setHintCount(0); setIsCorrect(false); setShowConfetti(false); setShowTryAnother(false); setWrongPokemon(false); setCurrentGuess(null); setCurrentRank(null); setCurrentWidth(0); setCurrentColor(''); setHintCountDown(5); setHintList([])}} className='text-white hover:text-[#d9d9d9] transition-all duration-300 ease-out nunito-bold text-sm' aria-label='Select Region'>Select Region</button>
                 </div>
                 <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
                 <div className='mb-2'>
-                  <button onClick={() => {setShowInstruction(false); setShowMenu(false)}} className='text-white nunito-bold text-sm'>How to Play?</button>
+                  <button onClick={() => {setShowInventory(true); setShowMenu(false)}} className='text-white hover:text-[#d9d9d9] transition-all duration-300 ease-out nunito-bold text-sm' aria-label='Open Inventory'>Inventory</button>
+                </div>
+                <div className='mb-2 w-3/4 h-[0.5px] bg-white'/>
+                <div className='mb-2'>
+                  <button onClick={() => {setShowInstruction(false); setShowMenu(false)}} className='text-white hover:text-[#d9d9d9] transition-all duration-300 ease-out nunito-bold text-sm'>How to Play?</button>
                 </div>
                 <div className='mb-6 w-3/4 h-[0.5px] bg-white'/>
               </div>

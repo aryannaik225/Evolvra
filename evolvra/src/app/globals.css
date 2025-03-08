@@ -257,3 +257,33 @@ body.dark {
   box-shadow: 0 0 0 0;
   transform: translateX(4px) translateY(4px); 
 }
+
+.kanto-bg {
+  background-image: url(/button-assests/kanto-btn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.johto-bg {
+  background-image: url(/button-assests/johto-btn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.hoenn-bg {
+  background-image: url(/button-assests/hoenn-btn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.sinnoh-bg {
+  background-image: url(/button-assests/sinnoh-btn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.unova-bg {
+  background-image: url(/button-assests/unova-btn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}

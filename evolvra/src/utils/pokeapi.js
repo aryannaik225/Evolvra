@@ -2,6 +2,14 @@ import { Pokedex } from "pokeapi-js-wrapper";
 
 const p = new Pokedex();
 
+const regionLimits = {
+  Kanto: { start: 1, end: 151 },
+  Johto: { start: 152, end: 251 },
+  Hoenn: { start: 252, end: 386 },
+  Sinnoh: { start: 387, end: 493 },
+  Unova: { start: 494, end: 649 },
+};
+
 export const getPokemonByName = async (name) => {
   try {
     const pokemon = await p.getPokemonByName(String(name).toLowerCase())
@@ -12,9 +20,13 @@ export const getPokemonByName = async (name) => {
   }
 }
 
-export const getRandomPokemon = async () => {
+export const getRandomPokemon = async (selectedRegion) => {
   try {
-    const randomId = Math.floor(Math.random() * 386) + 1
+
+    if(!selectedRegion || !regionLimits[selectedRegion]) return null
+
+    const { start, end } = regionLimits[selectedRegion]
+    const randomId = Math.floor(Math.random() * (end - start + 1)) + start
     const pokemon = await p.getPokemonByName(randomId)
     return pokemon
   } catch (error) {
