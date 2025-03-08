@@ -4,7 +4,7 @@ import Snorlax from '@/assets/snorlax.svg'
 import PurplePokeball from '@/assets/purple-pokeball.svg'
 import Image from 'next/image'
 
-const InstructionMenu = ({ setSelectedRegion }) => {
+const InstructionMenu = ({ setSelectRegion, setShowInstructionMenu }) => {
   return (
     <div className='rounded-xl dark:bg-[#2A1E4F] dark:border-[#6A0DAD] bg-[#8647B3] border-[#2A1E4F] border-4 border-solid mb-9 w-full sm:w-[443px] md:w-[573px]'>
       <div className='p-4 flex flex-col'>
@@ -24,7 +24,7 @@ const InstructionMenu = ({ setSelectedRegion }) => {
 
         <div className='flex items-end justify-between mt-4'>
           <Image src={Snorlax} alt="*" draggable='false' className='w-[57px] sm:w-[97px] select-none'/>
-          <button className='mr-4 sm:mr-10 flex justify-center items-center box-shadow gap-3 lg:px-[70px] px-[30px] lg:py-[18px] py-[10px] nunito-bold bg-[#6A0DAD] dark:text-white text-black' onClick={() => setSelectedRegion(true)}>
+          <button className='mr-4 sm:mr-10 flex justify-center items-center box-shadow gap-3 lg:px-[70px] px-[30px] lg:py-[18px] py-[10px] nunito-bold bg-[#6A0DAD] dark:text-white text-black' onClick={() => { setSelectRegion(true); setShowInstructionMenu(false); }}>
             <p className='text-lg'>Start</p>
             <p className='text-lg'>&gt;</p>
           </button>

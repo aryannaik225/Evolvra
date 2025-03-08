@@ -15,6 +15,8 @@ import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/utils/firebaseConfig'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
+import InstructionMenu from './InstructionMenu'
+import SelectRegion from './SelectRegion'
 
 const GamePage = ({ isDarkMode }) => {
 
@@ -343,9 +345,17 @@ const GamePage = ({ isDarkMode }) => {
             </div> */}
           </div>
         
-          <div className='mt-4'>
-            <Instructions setLetsPlay={setLetsPlay}/>
+          <div className={`mt-4 ${showInstructionMenu ? '' : 'hidden'}`}>
+            {/* <Instructions setLetsPlay={setLetsPlay}/> */}
+            <InstructionMenu setSelectRegion={setSelectRegion} setShowInstructionMenu={setShowInstructionMenu}/>
           </div>
+
+
+          <div className={`mt-4 ${selectRegion ? '' : 'hidden'}`}>
+            <SelectRegion setLetsPlay={setLetsPlay} setSelectRegion={setSelectRegion} setSelectedRegion={setSelectedRegion}/>
+          </div>
+
+
         </div>
       </div>
     )}
