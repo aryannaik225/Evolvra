@@ -68,13 +68,12 @@ const GamePage = ({ isDarkMode }) => {
     const fetchPokemonList = async () => {
       try {
         if (!selectedRegion || !regionLimits[selectedRegion]) return
-
+        
         const { start, end } = regionLimits[selectedRegion]
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${end-start+1}&offset=${start-1}`)
         const data = await response.json()
         const pokemonNames = data.results.map(pokemon => pokemon.name)
         const indices = data.results.map(pokemon => parseInt(pokemon.url.split('/')[6], 10))
-        console.log("Pokemon List:", pokemonNames, indices)
         setIndexList(indices)
         setPokemonList(pokemonNames)
       } catch (error) {
